@@ -56,6 +56,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0 18px; }
 .history li { padding: 14px 17px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; }
 .history li:last-child { border: 0; }
 .history a { color: var(--ink); }
+.attempt-actions { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.attempt-actions form, .delete-attempt-form { display: inline; margin: 0; }
+.delete-button { background: transparent; border: 1px solid #a65363; color: #ffb4bc; padding: 5px 9px; font-size: .82rem; }
+.delete-button:hover { background: var(--danger); }
+.delete-attempt-form { margin-left: 8px; }
 .back { color: #b8adff; text-decoration: none; }
 .practice-card, .feedback-card, .question-library { margin-top: 16px; }
 .feedback { background: var(--accent); border: 1px solid #414b85; padding: 16px; border-radius: 8px; }
@@ -70,6 +75,17 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0 18px; }
 .question-answer { border-top: 1px solid var(--line); color: var(--muted); padding: 16px 20px; white-space: pre-wrap; }
 .question-answer strong { color: #c7c0ff; }
 .question-answer p { margin: 6px 0 0; }
+.my-feedback-page { max-width: 800px; }
+.feedback-history-list { list-style: none; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.feedback-history-list li { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 24px; justify-content: space-between; padding: 18px 20px; }
+.feedback-history-list li:last-child { border-bottom: 0; }
+.feedback-history-list a { color: var(--ink); font-weight: 700; }
+.attempt-topic { color: var(--muted); font-size: .82rem; margin: 0 0 4px; text-transform: uppercase; }
+.empty-state { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 28px; }
+.feedback-button { margin: 8px 0 16px; }
+.feedback-practice-card { max-width: 780px; margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 34px; }
+.practice-question { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 12px; }
+.practice-question h2 { font-size: 1.15rem; margin-top: 12px; }
 
 @media (max-width: 600px) {
   nav { padding: 18px; }

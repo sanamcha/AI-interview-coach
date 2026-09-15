@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<section class="feedback-practice-card">
+  <p class="eyebrow">{{ category }} FEEDBACK PRACTICE</p>
+  <h1>Answer 10 {{ category }} questions</h1>
+  <p class="library-intro">Write at least 30 characters for each answer. When you submit, every answer is saved to your practice history with coaching feedback.</p>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    {% for question, sample_answer in questions %}
+      <article class="practice-question">
+        <h2>{{ loop.index }}. {{ question }}</h2>
+        <label for="answer_{{ loop.index0 }}">Your answer</label>
+        <textarea id="answer_{{ loop.index0 }}" name="answer_{{ loop.index0 }}" rows="6" minlength="30" required placeholder="Write your answer here..."></textarea>
+      </article>
+    {% endfor %}
+    {{ form.submit(class_='button') }}
+  </form>
+</section>
+{% endblock %}

@@ -10,9 +10,4 @@
     <a class="category" href="{{ url_for('python_interview_questions') if category == 'Python' else url_for('sql_interview_questions') if category == 'SQL' else url_for('behavioral_interview_questions') if category == 'Behavioral' else url_for('practice', category=category) }}">{{ category }} <span>→</span></a>
   {% endfor %}
 </div>
-<section class="history"><h2>Recent answers</h2>
-{% if attempts %}<ul>
-  {% for attempt in attempts %}<li><a href="{{ url_for('attempt_detail', attempt_id=attempt.id) }}">{{ attempt.question.category }} — {{ attempt.question.text[:55] }}{% if attempt.question.text|length > 55 %}…{% endif %}</a><strong>{{ attempt.score }}/100</strong></li>{% endfor %}
-</ul>{% else %}<p>Your completed answers will appear here.</p>{% endif %}
-</section>
 {% endblock %}

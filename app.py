@@ -7,13 +7,19 @@ import secrets
 from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
 from sqlalchemy import func
 
-from forms import AnswerForm, GuestLoginForm, LoginForm, SignupForm
+from forms import (AnswerForm, DeleteAttemptForm, FeedbackPracticeForm,
+                   GuestLoginForm, LoginForm, SignupForm)
 from models import Attempt, Question, User, db
 from python_questions import PYTHON_QUESTIONS
 from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
+FEEDBACK_TOPICS = {
+    'python': ('Python', PYTHON_QUESTIONS),
+    'sql': ('SQL', SQL_QUESTIONS),
+    'behavioral': ('Behavioral', BEHAVIORAL_QUESTIONS),
+}
 
 app = Flask(__name__)
 app.config.update(
@@ -159,7 +165,19 @@ def dashboard():
                   .distinct().order_by(Question.category)]
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
-                           categories=categories, average=average)
+                           categories=categories, average=average,
+                           delete_form=DeleteAttemptForm())
+
+
+@app.route('/my-feedback')
+def my_feedback():
+    """Show the full saved-answer history for the signed-in user."""
+    if not login_required():
+        return redirect(url_for('login'))
+    attempts = (Attempt.query.filter_by(user_id=g.user.id)
+                .order_by(Attempt.created_at.desc()).all())
+    return render_template('my_feedback.html', attempts=attempts,
+                           delete_form=DeleteAttemptForm())
 
 
 @app.route('/python-interview-questions')
@@ -169,7 +187,7 @@ def python_interview_questions():
         return redirect(url_for('login'))
     return render_template('python_questions.html', questions=PYTHON_QUESTIONS,
                            library_title='100 common Python interview questions',
-                           library_label='PYTHON STUDY LIBRARY')
+                           library_label='PYTHON STUDY LIBRARY', feedback_topic='python')
 
 
 @app.route('/sql-interview-questions')
@@ -179,7 +197,7 @@ def sql_interview_questions():
         return redirect(url_for('login'))
     return render_template('python_questions.html', questions=SQL_QUESTIONS,
                            library_title='100 common SQL interview questions',
-                           library_label='SQL STUDY LIBRARY')
+                           library_label='SQL STUDY LIBRARY', feedback_topic='sql')
 
 
 @app.route('/behavioral-interview-questions')
@@ -189,7 +207,49 @@ def behavioral_interview_questions():
         return redirect(url_for('login'))
     return render_template('python_questions.html', questions=BEHAVIORAL_QUESTIONS,
                            library_title='50 common behavioral interview questions',
-                           library_label='BEHAVIORAL STUDY LIBRARY')
+                           library_label='BEHAVIORAL STUDY LIBRARY', feedback_topic='behavioral')
+
+
+@app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
+def feedback_practice(topic):
+    """Answer ten library prompts and save each response to practice history."""
+    if not login_required():
+        return redirect(url_for('login'))
+
+    topic_data = FEEDBACK_TOPICS.get(topic)
+    if topic_data is None:
+        abort(404)
+    category, library = topic_data
+    questions = library[:10]
+    form = FeedbackPracticeForm()
+
+    if form.validate_on_submit():
+        answers = [request.form.get('answer_{}'.format(index), '').strip()
+                   for index in range(len(questions))]
+        if any(len(answer) < 30 for answer in answers):
+            flash('Please write at least 30 characters for every answer.', 'warning')
+        else:
+            saved_questions = []
+            for prompt, unused_answer in questions:
+                question = Question.query.filter_by(category=category, text=prompt).first()
+                if question is None:
+                    question = Question(category=category, difficulty='Practice', text=prompt)
+                    db.session.add(question)
+                saved_questions.append(question)
+            db.session.flush()
+
+            for question, answer in zip(saved_questions, answers):
+                score, feedback, unused_source = fallback_feedback(answer)
+                db.session.add(Attempt(
+                    user_id=g.user.id, question_id=question.id, answer=answer,
+                    score=score, feedback=feedback, feedback_source='feedback practice'
+                ))
+            db.session.commit()
+            flash('Saved 10 {} feedback-practice answers to your history.'.format(category), 'success')
+            return redirect(url_for('dashboard'))
+
+    return render_template('feedback_practice.html', form=form, topic=topic,
+                           category=category, questions=questions)
 
 
 @app.route('/practice')
@@ -233,7 +293,27 @@ def attempt_detail(attempt_id):
         abort(404)
     if attempt.user_id != g.user.id:
         abort(403)
-    return render_template('feedback.html', attempt=attempt)
+    return render_template('feedback.html', attempt=attempt,
+                           delete_form=DeleteAttemptForm())
+
+
+@app.post('/attempts/<int:attempt_id>/delete')
+def delete_attempt(attempt_id):
+    """Delete only an attempt belonging to the signed-in user."""
+    if not login_required():
+        return redirect(url_for('login'))
+    form = DeleteAttemptForm()
+    if not form.validate_on_submit():
+        abort(400)
+    attempt = db.session.get(Attempt, attempt_id)
+    if attempt is None:
+        abort(404)
+    if attempt.user_id != g.user.id:
+        abort(403)
+    db.session.delete(attempt)
+    db.session.commit()
+    flash('Practice answer deleted. You can now retry the question.', 'success')
+    return redirect(url_for('dashboard'))
 
 
 if __name__ == '__main__':

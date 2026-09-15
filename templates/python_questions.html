@@ -5,6 +5,7 @@
   <p class="eyebrow">{{ library_label }}</p>
   <h1>{{ library_title }}</h1>
   <p class="library-intro">Try to answer each prompt aloud before opening its short model answer.</p>
+  <a class="button feedback-button" href="{{ url_for('feedback_practice', topic=feedback_topic) }}">Feedback practice</a>
   {% for question, answer in questions %}
     <details class="question-item">
       <summary><span>{{ loop.index }}.</span> {{ question }}</summary>

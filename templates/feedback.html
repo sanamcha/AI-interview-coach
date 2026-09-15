@@ -9,5 +9,9 @@
   <h2>The question</h2><p>{{ attempt.question.text }}</p>
   <h2>Your answer</h2><div class="answer">{{ attempt.answer }}</div>
   <a class="button" href="{{ url_for('practice', category=attempt.question.category) }}">Try another question</a>
+  <form class="delete-attempt-form" action="{{ url_for('delete_attempt', attempt_id=attempt.id) }}" method="post">
+    {{ delete_form.hidden_tag() }}
+    {{ delete_form.delete(class_='delete-button') }}
+  </form>
 </section>
 {% endblock %}

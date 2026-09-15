@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="my-feedback-page">
+  <p class="eyebrow">YOUR PRACTICE HISTORY</p>
+  <h1>My feedback</h1>
+  <p class="library-intro">Review every saved answer, open its coaching feedback, or delete it before retrying.</p>
+  {% if attempts %}
+    <ul class="feedback-history-list">
+      {% for attempt in attempts %}
+        <li>
+          <div>
+            <p class="attempt-topic">{{ attempt.question.category }} · {{ attempt.feedback_source }}</p>
+            <a href="{{ url_for('attempt_detail', attempt_id=attempt.id) }}">{{ attempt.question.text }}</a>
+          </div>
+          <span class="attempt-actions">
+            <strong>{{ attempt.score }}/100</strong>
+            <form action="{{ url_for('delete_attempt', attempt_id=attempt.id) }}" method="post">
+              {{ delete_form.hidden_tag() }}
+              {{ delete_form.delete(class_='delete-button') }}
+            </form>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-state"><p>You have not saved any answers yet.</p><a class="button" href="{{ url_for('dashboard') }}">Start practicing</a></div>
+  {% endif %}
+</section>
+{% endblock %}

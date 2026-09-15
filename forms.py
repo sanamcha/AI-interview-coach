@@ -24,3 +24,15 @@ class GuestLoginForm(FlaskForm):
     """CSRF-protected form for starting a guest session."""
 
     submit = SubmitField('Continue as guest')
+
+
+class FeedbackPracticeForm(FlaskForm):
+    """Provides CSRF protection for a multi-question feedback practice page."""
+
+    submit = SubmitField('Save practice answers')
+
+
+class DeleteAttemptForm(FlaskForm):
+    """CSRF-protected deletion for one saved practice attempt."""
+
+    delete = SubmitField('Delete')
