@@ -14,6 +14,7 @@ from python_questions import PYTHON_QUESTIONS
 from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
 from react_questions import REACT_QUESTIONS
+from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -21,6 +22,9 @@ FEEDBACK_TOPICS = {
     'sql': ('SQL', SQL_QUESTIONS),
     'behavioral': ('Behavioral', BEHAVIORAL_QUESTIONS),
     'react': ('React', REACT_QUESTIONS),
+    'html': ('HTML', HTML_QUESTIONS),
+    'css': ('CSS', CSS_QUESTIONS),
+    'javascript': ('JavaScript', JAVASCRIPT_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -165,7 +169,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -221,6 +225,33 @@ def react_interview_questions():
     return render_template('python_questions.html', questions=REACT_QUESTIONS,
                            library_title='100 common React interview questions',
                            library_label='REACT STUDY LIBRARY', feedback_topic='react')
+
+
+@app.route('/html-interview-questions')
+def html_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=HTML_QUESTIONS,
+                           library_title='100 common HTML interview questions',
+                           library_label='HTML STUDY LIBRARY', feedback_topic='html')
+
+
+@app.route('/css-interview-questions')
+def css_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=CSS_QUESTIONS,
+                           library_title='100 common CSS interview questions',
+                           library_label='CSS STUDY LIBRARY', feedback_topic='css')
+
+
+@app.route('/javascript-interview-questions')
+def javascript_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=JAVASCRIPT_QUESTIONS,
+                           library_title='100 common JavaScript interview questions',
+                           library_label='JAVASCRIPT STUDY LIBRARY', feedback_topic='javascript')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
