@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<section class="practice-card">
+  <p class="eyebrow">{{ question.category }} · {{ question.difficulty }}</p>
+  <h1>{{ question.text }}</h1>
+  <form method="post" action="{{ url_for('submit_answer', question_id=question.id) }}">
+    {{ form.hidden_tag() }}
+    <label>{{ form.answer.label }}{{ form.answer(rows=11, placeholder='Write your answer. Aim for a clear explanation and a concrete example.') }}{% for error in form.answer.errors %}<small>{{ error }}</small>{% endfor %}</label>
+    <button class="button">Get feedback</button>
+  </form>
+</section>
+{% endblock %}

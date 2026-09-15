@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interview Coach</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="{{ url_for('home') }}">Interview Coach</a>
+    <div>
+      {% if g.user %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <form class="inline" action="{{ url_for('logout') }}" method="post"><button>Log out</button></form>
+      {% else %}
+        <a href="{{ url_for('login') }}">Log in</a>
+        <a class="button small" href="{{ url_for('signup') }}">Sign up</a>
+      {% endif %}
+    </div>
+  </nav>
+  <main>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

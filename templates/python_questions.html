@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<section class="question-library">
+  <p class="eyebrow">{{ library_label }}</p>
+  <h1>{{ library_title }}</h1>
+  <p class="library-intro">Try to answer each prompt aloud before opening its short model answer.</p>
+  {% for question, answer in questions %}
+    <details class="question-item">
+      <summary><span>{{ loop.index }}.</span> {{ question }}</summary>
+      <div class="question-answer"><strong>Answer</strong><p>{{ answer }}</p></div>
+    </details>
+  {% endfor %}
+</section>
+{% endblock %}

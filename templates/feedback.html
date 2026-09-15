@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<section class="feedback-card">
+  <p class="eyebrow">{{ attempt.question.category }} · {{ attempt.feedback_source }}</p>
+  <div class="score big">{{ attempt.score }}<span>/100</span></div>
+  <h1>Your feedback</h1>
+  <p class="feedback">{{ attempt.feedback }}</p>
+  <h2>The question</h2><p>{{ attempt.question.text }}</p>
+  <h2>Your answer</h2><div class="answer">{{ attempt.answer }}</div>
+  <a class="button" href="{{ url_for('practice', category=attempt.question.category) }}">Try another question</a>
+</section>
+{% endblock %}

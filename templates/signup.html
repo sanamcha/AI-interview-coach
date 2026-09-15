@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-card"><h1>Create your account</h1>
+<form method="post">{{ form.hidden_tag() }}
+  {% for field in [form.username, form.email, form.password] %}
+    <label>{{ field.label }}{{ field() }}{% for error in field.errors %}<small>{{ error }}</small>{% endfor %}</label>
+  {% endfor %}
+  <button class="button">Create account</button>
+</form><p>Already have an account? <a href="{{ url_for('login') }}">Log in</a>.</p></section>
+{% endblock %}

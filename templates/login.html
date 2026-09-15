@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-card"><h1>Welcome back</h1>
+<form method="post">{{ form.hidden_tag() }}
+  {% for field in [form.username, form.password] %}
+    <label>{{ field.label }}{{ field() }}{% for error in field.errors %}<small>{{ error }}</small>{% endfor %}</label>
+  {% endfor %}
+  <button class="button">Log in</button>
+</form>
+<hr>
+<p>Want to look around first?</p>
+<form action="{{ url_for('guest_login') }}" method="post">
+  {{ guest_form.hidden_tag() }}
+  {{ guest_form.submit(class_='button secondary') }}
+</form></section>
+{% endblock %}

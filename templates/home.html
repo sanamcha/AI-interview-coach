@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">PRACTICE WITH PURPOSE</p>
+  <h1>Become interview-ready, one answer at a time.</h1>
+  <p>Practice Python, SQL, and behavioral questions. Save every answer and learn from focused feedback.</p>
+  <a class="button" href="{{ url_for('signup') }}">Create an account</a>
+  <form class="guest-form" action="{{ url_for('guest_login') }}" method="post">
+    {{ guest_form.hidden_tag() }}
+    {{ guest_form.submit(class_='button secondary') }}
+  </form>
+</section>
+{% endblock %}
