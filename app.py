@@ -13,12 +13,14 @@ from models import Attempt, Question, User, db
 from python_questions import PYTHON_QUESTIONS
 from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
+from react_questions import REACT_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
     'python': ('Python', PYTHON_QUESTIONS),
     'sql': ('SQL', SQL_QUESTIONS),
     'behavioral': ('Behavioral', BEHAVIORAL_QUESTIONS),
+    'react': ('React', REACT_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -161,8 +163,9 @@ def dashboard():
         return redirect(url_for('login'))
     attempts = (Attempt.query.filter_by(user_id=g.user.id)
                 .order_by(Attempt.created_at.desc()).limit(10).all())
-    categories = [row[0] for row in db.session.query(Question.category)
-                  .distinct().order_by(Question.category)]
+    database_categories = [row[0] for row in db.session.query(Question.category)
+                           .distinct().order_by(Question.category)]
+    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -208,6 +211,16 @@ def behavioral_interview_questions():
     return render_template('python_questions.html', questions=BEHAVIORAL_QUESTIONS,
                            library_title='50 common behavioral interview questions',
                            library_label='BEHAVIORAL STUDY LIBRARY', feedback_topic='behavioral')
+
+
+@app.route('/react-interview-questions')
+def react_interview_questions():
+    """Show the React question library with answers hidden by default."""
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=REACT_QUESTIONS,
+                           library_title='100 common React interview questions',
+                           library_label='REACT STUDY LIBRARY', feedback_topic='react')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
