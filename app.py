@@ -15,6 +15,7 @@ from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
 from react_questions import REACT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
+from data_science_questions import DATA_SCIENCE_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -25,6 +26,7 @@ FEEDBACK_TOPICS = {
     'html': ('HTML', HTML_QUESTIONS),
     'css': ('CSS', CSS_QUESTIONS),
     'javascript': ('JavaScript', JAVASCRIPT_QUESTIONS),
+    'data-science': ('Data Science', DATA_SCIENCE_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -169,7 +171,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -252,6 +254,15 @@ def javascript_interview_questions():
     return render_template('python_questions.html', questions=JAVASCRIPT_QUESTIONS,
                            library_title='100 common JavaScript interview questions',
                            library_label='JAVASCRIPT STUDY LIBRARY', feedback_topic='javascript')
+
+
+@app.route('/data-science-interview-questions')
+def data_science_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=DATA_SCIENCE_QUESTIONS,
+                           library_title='100 common Data Science interview questions',
+                           library_label='DATA SCIENCE STUDY LIBRARY', feedback_topic='data-science')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
