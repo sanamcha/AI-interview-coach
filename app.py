@@ -16,6 +16,7 @@ from behavioral_questions import BEHAVIORAL_QUESTIONS
 from react_questions import REACT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
+from ai_ml_questions import AI_ML_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -27,6 +28,7 @@ FEEDBACK_TOPICS = {
     'css': ('CSS', CSS_QUESTIONS),
     'javascript': ('JavaScript', JAVASCRIPT_QUESTIONS),
     'data-science': ('Data Science', DATA_SCIENCE_QUESTIONS),
+    'ai-ml': ('AI/Machine Learning', AI_ML_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -171,7 +173,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science', 'AI/Machine Learning'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -263,6 +265,15 @@ def data_science_interview_questions():
     return render_template('python_questions.html', questions=DATA_SCIENCE_QUESTIONS,
                            library_title='100 common Data Science interview questions',
                            library_label='DATA SCIENCE STUDY LIBRARY', feedback_topic='data-science')
+
+
+@app.route('/ai-ml-interview-questions')
+def ai_ml_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=AI_ML_QUESTIONS,
+                           library_title='100 common AI/Machine Learning interview questions',
+                           library_label='AI/MACHINE LEARNING STUDY LIBRARY', feedback_topic='ai-ml')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
