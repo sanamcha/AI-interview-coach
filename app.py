@@ -21,6 +21,8 @@ from coding_patterns import CODING_PATTERNS
 from full_stack_questions import FULL_STACK_QUESTIONS
 from frontend_questions import FRONTEND_QUESTIONS
 from backend_questions import BACKEND_QUESTIONS
+from python_tricky_questions import PYTHON_TRICKY_QUESTIONS
+from javascript_tricky_questions import JAVASCRIPT_TRICKY_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -36,6 +38,8 @@ FEEDBACK_TOPICS = {
     'full-stack': ('Full Stack Developer', FULL_STACK_QUESTIONS),
     'frontend': ('Frontend Developer', FRONTEND_QUESTIONS),
     'backend': ('Backend Developer', BACKEND_QUESTIONS),
+    'python-tricky': ('Python Tricky Questions', PYTHON_TRICKY_QUESTIONS),
+    'javascript-tricky': ('JavaScript Tricky Questions', JAVASCRIPT_TRICKY_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -215,7 +219,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'Python Tricky Questions', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'JavaScript Tricky Questions', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -374,6 +378,24 @@ def backend_interview_questions():
     return render_template('python_questions.html', questions=BACKEND_QUESTIONS,
                            library_title='100 common Backend Developer interview questions',
                            library_label='BACKEND STUDY LIBRARY', feedback_topic='backend')
+
+
+@app.route('/python-tricky-interview-questions')
+def python_tricky_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=PYTHON_TRICKY_QUESTIONS,
+                           library_title='100 common Python tricky interview questions',
+                           library_label='PYTHON TRICKY QUESTIONS', feedback_topic='python-tricky')
+
+
+@app.route('/javascript-tricky-interview-questions')
+def javascript_tricky_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=JAVASCRIPT_TRICKY_QUESTIONS,
+                           library_title='100 common JavaScript tricky interview questions',
+                           library_label='JAVASCRIPT TRICKY QUESTIONS', feedback_topic='javascript-tricky')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
