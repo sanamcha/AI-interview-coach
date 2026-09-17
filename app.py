@@ -18,6 +18,9 @@ from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
 from coding_patterns import CODING_PATTERNS
+from full_stack_questions import FULL_STACK_QUESTIONS
+from frontend_questions import FRONTEND_QUESTIONS
+from backend_questions import BACKEND_QUESTIONS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -30,6 +33,9 @@ FEEDBACK_TOPICS = {
     'javascript': ('JavaScript', JAVASCRIPT_QUESTIONS),
     'data-science': ('Data Science', DATA_SCIENCE_QUESTIONS),
     'ai-ml': ('AI/Machine Learning', AI_ML_QUESTIONS),
+    'full-stack': ('Full Stack Developer', FULL_STACK_QUESTIONS),
+    'frontend': ('Frontend Developer', FRONTEND_QUESTIONS),
+    'backend': ('Backend Developer', BACKEND_QUESTIONS),
 }
 
 app = Flask(__name__)
@@ -209,7 +215,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science', 'AI/Machine Learning'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -341,6 +347,33 @@ def ai_ml_interview_questions():
     return render_template('python_questions.html', questions=AI_ML_QUESTIONS,
                            library_title='100 common AI/Machine Learning interview questions',
                            library_label='AI/MACHINE LEARNING STUDY LIBRARY', feedback_topic='ai-ml')
+
+
+@app.route('/full-stack-interview-questions')
+def full_stack_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=FULL_STACK_QUESTIONS,
+                           library_title='100 common Full Stack Developer interview questions',
+                           library_label='FULL STACK STUDY LIBRARY', feedback_topic='full-stack')
+
+
+@app.route('/frontend-interview-questions')
+def frontend_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=FRONTEND_QUESTIONS,
+                           library_title='100 common Frontend Developer interview questions',
+                           library_label='FRONTEND STUDY LIBRARY', feedback_topic='frontend')
+
+
+@app.route('/backend-interview-questions')
+def backend_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=BACKEND_QUESTIONS,
+                           library_title='100 common Backend Developer interview questions',
+                           library_label='BACKEND STUDY LIBRARY', feedback_topic='backend')
 
 
 @app.route('/feedback-practice/<topic>', methods=['GET', 'POST'])
