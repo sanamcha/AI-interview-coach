@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="chat-page">
+  <div class="chat-header"><div><p class="eyebrow">INTERVIEW COACH CHAT</p><h1>Ask anything</h1><p class="library-intro">Ask a coding, technical, or interview-preparation question.</p></div>{% if messages %}<form action="{{ url_for('clear_chat') }}" method="post"><button class="delete-button">Clear chat</button></form>{% endif %}</div>
+  <div class="chat-messages">
+    {% if messages %}{% for item in messages %}<article class="chat-message {{ item.role }}"><strong>{{ 'You' if item.role == 'user' else 'Interview Coach' }}</strong><div>{{ item.content }}</div></article>{% endfor %}{% else %}<p class="chat-empty">Try: “How should I explain Python generators in an interview?”</p>{% endif %}
+  </div>
+  <form class="chat-input" method="post">{{ form.hidden_tag() }}{{ form.message(rows=4, placeholder='Ask an interview or coding question...') }}{% for error in form.message.errors %}<small>{{ error }}</small>{% endfor %}{{ form.submit(class_='button') }}</form>
+</section>
+{% endblock %}

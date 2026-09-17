@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="pattern-page"><p class="eyebrow">CODING / ALGORITHMS</p><h1>48 popular coding patterns</h1><p class="library-intro">Choose a pattern, then open each prompt to compare Python and JavaScript approaches.</p>
+{% for pattern in patterns %}<details class="pattern-item"><summary><span>{{ loop.index }}.</span> {{ pattern.name }}</summary><div class="pattern-body"><p>{{ pattern.use_case|capitalize }} practice. Five common interview prompts:</p>{% for prompt in pattern.questions %}<details class="question-item"><summary>{{ loop.index }}. {{ prompt }}</summary><div class="code-answers"><div><strong>Python</strong><pre><code>{{ pattern.python }}</code></pre></div><div><strong>JavaScript</strong><pre><code>{{ pattern.javascript }}</code></pre></div></div></details>{% endfor %}</div></details>{% endfor %}</section>
+{% endblock %}

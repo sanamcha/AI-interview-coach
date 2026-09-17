@@ -36,3 +36,8 @@ class DeleteAttemptForm(FlaskForm):
     """CSRF-protected deletion for one saved practice attempt."""
 
     delete = SubmitField('Delete')
+
+
+class ChatForm(FlaskForm):
+    message = TextAreaField('Ask your interview question', validators=[DataRequired(), Length(min=3, max=3000)])
+    submit = SubmitField('Send')

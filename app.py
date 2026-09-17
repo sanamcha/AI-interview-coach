@@ -7,7 +7,7 @@ import secrets
 from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
 from sqlalchemy import func
 
-from forms import (AnswerForm, DeleteAttemptForm, FeedbackPracticeForm,
+from forms import (AnswerForm, ChatForm, DeleteAttemptForm, FeedbackPracticeForm,
                    GuestLoginForm, LoginForm, SignupForm)
 from models import Attempt, Question, User, db
 from python_questions import PYTHON_QUESTIONS
@@ -17,6 +17,7 @@ from react_questions import REACT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
+from coding_patterns import CODING_PATTERNS
 
 CURR_USER_KEY = 'current_user_id'
 FEEDBACK_TOPICS = {
@@ -68,6 +69,41 @@ def get_feedback(question, answer):
     """Use OpenAI only when a key is configured; otherwise use local feedback."""
     if not os.environ.get('OPENAI_API_KEY'):
         return fallback_feedback(answer)
+
+
+def chat_answer(messages):
+    """Answer interview questions with OpenAI; the key remains server-side."""
+    if not os.environ.get('OPENAI_API_KEY'):
+        return ('Add `OPENAI_API_KEY` to your environment to enable AI chat. '
+                'This local app cannot generate a full answer without the key.')
+    try:
+        from openai import (APIConnectionError, APIStatusError, AuthenticationError,
+                            OpenAI, RateLimitError)
+        response = OpenAI().responses.create(
+            model=os.environ.get('OPENAI_MODEL', 'gpt-5'),
+            instructions=('You are Interview Coach, a concise and encouraging coach for coding and interview questions. '
+                          'Explain clearly, give a short example when helpful, and identify important interview talking points.'),
+            input=[{'role': item['role'], 'content': item['content']} for item in messages[-10:]],
+            max_output_tokens=700,
+            store=False,
+        )
+        return response.output_text
+    except AuthenticationError:
+        app.logger.warning('OpenAI chat authentication failed.')
+        return 'OpenAI rejected the API key. Create a new key, export it in the Flask terminal, then restart Flask.'
+    except RateLimitError:
+        app.logger.warning('OpenAI chat rate limit or billing limit reached.')
+        return 'OpenAI rate limit or billing limit reached. Check your OpenAI project billing and try again shortly.'
+    except APIConnectionError:
+        app.logger.warning('OpenAI chat connection failed.')
+        return 'Could not connect to OpenAI. Check your internet connection and try again.'
+    except APIStatusError as error:
+        app.logger.warning('OpenAI chat request failed with status %s.', error.status_code)
+        return 'OpenAI could not process this request (HTTP {}). Check OPENAI_MODEL and your project access.'.format(error.status_code)
+    except Exception as error:
+        app.logger.exception('Unexpected OpenAI chat error.')
+        return ('The AI coach encountered a {}. Check the Flask terminal for the full error, '
+                'then try again.').format(type(error).__name__)
     try:
         from openai import OpenAI
         client = OpenAI()
@@ -189,6 +225,37 @@ def my_feedback():
                 .order_by(Attempt.created_at.desc()).all())
     return render_template('my_feedback.html', attempts=attempts,
                            delete_form=DeleteAttemptForm())
+
+
+@app.route('/coding-patterns')
+def coding_patterns():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('coding_patterns.html', patterns=CODING_PATTERNS)
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    """Session-based interview chat retaining the latest six exchanges."""
+    if not login_required():
+        return redirect(url_for('login'))
+    form = ChatForm()
+    messages = session.get('chat_messages', [])
+    if form.validate_on_submit():
+        messages.append({'role': 'user', 'content': form.message.data.strip()})
+        messages.append({'role': 'assistant', 'content': chat_answer(messages)})
+        session['chat_messages'] = messages[-12:]
+        session.modified = True
+        return redirect(url_for('chat'))
+    return render_template('chat.html', form=form, messages=messages)
+
+
+@app.post('/chat/clear')
+def clear_chat():
+    if not login_required():
+        return redirect(url_for('login'))
+    session.pop('chat_messages', None)
+    return redirect(url_for('chat'))
 
 
 @app.route('/python-interview-questions')

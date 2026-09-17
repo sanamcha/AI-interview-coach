@@ -6,6 +6,7 @@
 </section>
 <h2>Pick a category</h2>
 <div class="categories">
+  <a class="category" href="{{ url_for('coding_patterns') }}">Popular Coding/Algorithms Pattern <span>→</span></a>
   {% for category in categories %}
     <a class="category" href="{{ url_for('python_interview_questions') if category == 'Python' else url_for('sql_interview_questions') if category == 'SQL' else url_for('behavioral_interview_questions') if category == 'Behavioral' else url_for('react_interview_questions') if category == 'React' else url_for('html_interview_questions') if category == 'HTML' else url_for('css_interview_questions') if category == 'CSS' else url_for('javascript_interview_questions') if category == 'JavaScript' else url_for('data_science_interview_questions') if category == 'Data Science' else url_for('ai_ml_interview_questions') if category == 'AI/Machine Learning' else url_for('practice', category=category) }}">{{ category }} <span>→</span></a>
   {% endfor %}
