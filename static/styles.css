@@ -111,3 +111,10 @@ pre { background: #0b111b; border: 1px solid var(--line); border-radius: 8px; co
   .dashboard-head { align-items: start; flex-direction: column; gap: 8px; }
   .form-card, .practice-card, .feedback-card { padding: 24px; }
 }
+
+/* Preserve indentation in coding prompts, including saved practice answers. */
+.question-item summary, .practice-question h2, .feedback-history-list a, .coding-prompt, .practice-card h1 {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+}

@@ -385,7 +385,7 @@ def python_tricky_interview_questions():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('python_questions.html', questions=PYTHON_TRICKY_QUESTIONS,
-                           library_title='100 common Python tricky interview questions',
+                           library_title='100 tricky Python coding challenges',
                            library_label='PYTHON TRICKY QUESTIONS', feedback_topic='python-tricky')
 
 
@@ -394,7 +394,7 @@ def javascript_tricky_interview_questions():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('python_questions.html', questions=JAVASCRIPT_TRICKY_QUESTIONS,
-                           library_title='100 common JavaScript tricky interview questions',
+                           library_title='100 tricky JavaScript coding challenges',
                            library_label='JAVASCRIPT TRICKY QUESTIONS', feedback_topic='javascript-tricky')
 
 
