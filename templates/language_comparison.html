@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<section class="comparison-page">
+  <p class="eyebrow">CODING REFERENCE</p>
+  <h1>Python vs JavaScript</h1>
+  <p class="library-intro">Compare everyday syntax and the behaviors that matter in interviews. Each main example runs independently in Python 3 or modern JavaScript.</p>
+  <div class="comparison-links" aria-label="Comparison sections">
+    <a href="#syntax">Syntax &amp; behavior</a>
+    <a href="#operations">Common operations</a>
+    <a href="#patterns">DSA patterns</a>
+  </div>
+  <h2 id="syntax">Syntax &amp; behavior</h2>
+  <div class="comparison-links" aria-label="Syntax topics">
+    {% for title, python, javascript, description in comparisons %}<a href="#example-{{ loop.index }}">{{ loop.index }}. {{ title }}</a>{% endfor %}
+  </div>
+  {% for title, python, javascript, description in comparisons %}
+  <article class="comparison-example" id="example-{{ loop.index }}">
+    <h3>{{ loop.index }}. {{ title }}</h3>
+    <p>{{ description }}</p>
+    <div class="comparison-scroll" role="region" aria-label="{{ title }} code comparison" tabindex="0">
+      <table class="comparison-table code-comparison">
+        <caption class="comparison-caption">{{ title }} — equivalent approaches</caption>
+        <thead><tr><th scope="col">Python</th><th scope="col">JavaScript</th></tr></thead>
+        <tbody><tr><td><pre><code>{{ python }}</code></pre></td><td><pre><code>{{ javascript }}</code></pre></td></tr></tbody>
+      </table>
+    </div>
+  </article>
+  {% endfor %}
+  {% for section_id, heading, rows in [('operations', 'Common interview operations', operations), ('patterns', 'DSA patterns comparison', patterns)] %}
+  <h2 id="{{ section_id }}">{{ heading }}</h2>
+  <p>{% if section_id == 'patterns' %}These are building blocks, not complete algorithms. Initialize the inputs and add the traversal or boundary-update logic described in each row.{% else %}Quick lookup for collections already initialized in your code.{% endif %}</p>
+  <div class="comparison-scroll" role="region" aria-label="{{ heading }}" tabindex="0">
+    <table class="comparison-table reference-table">
+      <caption class="comparison-caption">{{ heading }}</caption>
+      <thead><tr><th scope="col">{{ 'Pattern' if section_id == 'patterns' else 'Operation' }}</th><th scope="col">Python</th><th scope="col">JavaScript</th><th scope="col">Key difference / usage</th></tr></thead>
+      <tbody>{% for title, python, javascript, description in rows %}<tr><th scope="row">{{ title }}</th><td><pre><code>{{ python }}</code></pre></td><td><pre><code>{{ javascript }}</code></pre></td><td>{{ description }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  {% endfor %}
+  <p class="library-intro">Language references: <a href="https://docs.python.org/3/tutorial/">Python tutorial</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide">JavaScript guide</a>.</p>
+</section>
+{% endblock %}

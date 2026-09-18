@@ -13,6 +13,7 @@
       {% if g.user %}
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('my_feedback') }}">My feedback</a>
+        <a href="{{ url_for('language_comparison') }}">Python vs JavaScript</a>
         <a href="{{ url_for('coding_patterns') }}">Coding patterns</a>
         <a href="{{ url_for('chat') }}">Chat</a>
         <form class="inline" action="{{ url_for('logout') }}" method="post"><button>Log out</button></form>

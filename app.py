@@ -14,10 +14,12 @@ from python_questions import PYTHON_QUESTIONS
 from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
 from react_questions import REACT_QUESTIONS
+from typescript_questions import TYPESCRIPT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
 from coding_patterns import CODING_PATTERNS
+from language_comparison import COMPARISONS, OPERATIONS, DSA_PATTERNS
 from full_stack_questions import FULL_STACK_QUESTIONS
 from frontend_questions import FRONTEND_QUESTIONS
 from backend_questions import BACKEND_QUESTIONS
@@ -33,6 +35,7 @@ FEEDBACK_TOPICS = {
     'html': ('HTML', HTML_QUESTIONS),
     'css': ('CSS', CSS_QUESTIONS),
     'javascript': ('JavaScript', JAVASCRIPT_QUESTIONS),
+    'typescript': ('TypeScript', TYPESCRIPT_QUESTIONS),
     'data-science': ('Data Science', DATA_SCIENCE_QUESTIONS),
     'ai-ml': ('AI/Machine Learning', AI_ML_QUESTIONS),
     'full-stack': ('Full Stack Developer', FULL_STACK_QUESTIONS),
@@ -219,7 +222,7 @@ def dashboard():
                 .order_by(Attempt.created_at.desc()).limit(10).all())
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
-    categories = list(dict.fromkeys(['Python', 'Python Tricky Questions', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'JavaScript Tricky Questions', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
+    categories = list(dict.fromkeys(['Python', 'Python Tricky Questions', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'JavaScript Tricky Questions', 'TypeScript', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
     average = round(sum(item.score for item in attempts) / len(attempts)) if attempts else None
     return render_template('dashboard.html', attempts=attempts,
                            categories=categories, average=average,
@@ -333,6 +336,23 @@ def javascript_interview_questions():
     return render_template('python_questions.html', questions=JAVASCRIPT_QUESTIONS,
                            library_title='100 common JavaScript interview questions',
                            library_label='JAVASCRIPT STUDY LIBRARY', feedback_topic='javascript')
+
+
+@app.route('/python-vs-javascript')
+def language_comparison():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('language_comparison.html', comparisons=COMPARISONS,
+                           operations=OPERATIONS, patterns=DSA_PATTERNS)
+
+
+@app.route('/typescript-interview-questions')
+def typescript_interview_questions():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('python_questions.html', questions=TYPESCRIPT_QUESTIONS,
+                           library_title='100 common TypeScript interview questions',
+                           library_label='TYPESCRIPT STUDY LIBRARY', feedback_topic='typescript')
 
 
 @app.route('/data-science-interview-questions')
