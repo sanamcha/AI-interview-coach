@@ -26,6 +26,11 @@
     <pre class="project-source"><code>{{ code }}</code></pre>
   </details>
   {% endfor %}
+  <h2>Live preview</h2>
+  <p>Add tasks, mark them complete, and delete them below. {{ 'Python tasks remain in this browser session.' if language == 'python' else 'Reloading the preview clears its tasks.' }}</p>
+  <iframe class="project-preview" title="{{ project.language }} To-Do List interactive preview"
+    src="{{ url_for(language + '_project_preview') }}" loading="lazy"></iframe>
+  <p><a href="{{ url_for(language + '_project_preview') }}" target="_blank" rel="noopener">Open the app in a new tab</a></p>
   <h2>Try it yourself</h2>
   <ul>
     <li>Add two tasks, complete one, undo it, then delete the other.</li>

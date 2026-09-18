@@ -19,6 +19,7 @@ from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
 from mini_projects import MINI_PROJECTS, project_files
+from mini_project_preview import create_python_preview, python_response, javascript_response
 from coding_patterns import CODING_PATTERNS
 from language_comparison import COMPARISONS, OPERATIONS, DSA_PATTERNS
 from full_stack_questions import FULL_STACK_QUESTIONS
@@ -53,6 +54,7 @@ app.config.update(
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
 )
 db.init_app(app)
+python_todo_preview = create_python_preview(app.config['SECRET_KEY'])
 
 
 @app.before_request
@@ -239,6 +241,29 @@ def my_feedback():
                 .order_by(Attempt.created_at.desc()).all())
     return render_template('my_feedback.html', attempts=attempts,
                            delete_form=DeleteAttemptForm())
+
+
+@app.route('/mini-projects/python/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/preview/<path:path>', methods=['GET', 'POST'])
+def python_project_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_todo_preview, path)
+
+
+@app.route('/mini-projects/javascript/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/preview/<filename>')
+def javascript_project_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename)
+
+
+@app.route('/mini-projects/react/preview/')
+def react_project_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html')
 
 
 @app.route('/mini-projects/<language>')

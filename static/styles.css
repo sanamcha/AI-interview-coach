@@ -144,3 +144,5 @@ pre { background: #0b111b; border: 1px solid var(--line); border-radius: 8px; co
 
 .mini-project-page { min-width: 0; }
 .project-source { margin: 0 12px 12px; max-height: 560px; overflow: auto; }
+
+.project-preview { display: block; width: 100%; height: 620px; border: 1px solid var(--line); border-radius: 12px; background: #f1f5f9; }
