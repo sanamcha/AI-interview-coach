@@ -3,12 +3,18 @@
 <a class="back" href="{{ url_for('dashboard') }}#mini-projects">← Mini-projects</a>
 <section class="mini-project-page">
   <p class="eyebrow">MINI-PROJECTS / {{ project.language }}</p>
-  <h1>{{ project.language }} To-Do List</h1>
-  <p>{{ project.summary }}</p>
+  <h1>{{ project.language }} mini-projects</h1>
   <p class="library-intro">Beginner · {{ project.stack }}</p>
   <div class="comparison-links" aria-label="Project languages">
     {% for slug, item in projects.items() %}<a href="{{ url_for('mini_project', language=slug) }}" {% if slug == language %}aria-current="page"{% endif %}>{{ item.language }}</a>{% endfor %}
   </div>
+  <p>Choose a project to show its instructions, sample code, and live preview. Click again to hide it.</p>
+  <ol class="mini-project-list">
+  {% for project in entries %}
+    <li><details class="mini-project-item">
+      <summary>{{ loop.index }}. {{ project.title }}</summary>
+      <div class="mini-project-content">
+      <p>{{ project.summary }}</p>
   <h2>What you will build</h2>
   <ul><li>Add a task with a nonempty title.</li><li>Mark a task complete and undo completion.</li><li>Delete a task and see how many remain.</li></ul>
   <p>{{ project.storage }}</p>
@@ -20,7 +26,7 @@
   <ol>{% for step in project.steps %}<li>{{ step }}</li>{% endfor %}</ol>
   <h2>Project files</h2>
   <p>Save each file at the path shown. HTML and CSS are included; Bootstrap is not required.</p>
-  {% for name, code in files %}
+  {% for name, code in project.files %}
   <details class="question-item" {% if loop.first %}open{% endif %}>
     <summary>{{ name }}</summary>
     <pre class="project-source"><code>{{ code }}</code></pre>
@@ -28,9 +34,9 @@
   {% endfor %}
   <h2>Live preview</h2>
   <p>Add tasks, mark them complete, and delete them below. {{ 'Python tasks remain in this browser session.' if language == 'python' else 'Reloading the preview clears its tasks.' }}</p>
-  <iframe class="project-preview" title="{{ project.language }} To-Do List interactive preview"
-    src="{{ url_for(language + '_project_preview') }}" loading="lazy"></iframe>
-  <p><a href="{{ url_for(language + '_project_preview') }}" target="_blank" rel="noopener">Open the app in a new tab</a></p>
+  <iframe class="project-preview" title="{{ project.language }} {{ project.title }} interactive preview"
+    src="{{ url_for(project.preview_endpoint) }}" loading="lazy"></iframe>
+  <p><a href="{{ url_for(project.preview_endpoint) }}" target="_blank" rel="noopener">Open the app in a new tab</a></p>
   <h2>Try it yourself</h2>
   <ul>
     <li>Add two tasks, complete one, undo it, then delete the other.</li>
@@ -42,5 +48,9 @@
   <h2>Extend the project</h2>
   <p>Add editing, Active / Completed filters, and persistent storage. Try Bootstrap for the form and buttons once the core behavior works.</p>
   {% if language == 'react' %}<p>References: <a href="https://vite.dev/guide/">Vite setup</a> · <a href="https://react.dev/learn/updating-arrays-in-state">Updating arrays in React state</a>.</p>{% endif %}
+      </div>
+    </details></li>
+  {% endfor %}
+  </ol>
 </section>
 {% endblock %}

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>React To-Do List</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react/app.css') }}">
-  <script src="{{ url_for('static', filename='todo-react/app.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react' + ('-tables' if tables else '') + '/app.css') }}">
+  <script src="{{ url_for('static', filename='todo-react' + ('-tables' if tables else '') + '/app.js') }}" defer></script>
 </head>
 <body>
   <div id="root"></div>

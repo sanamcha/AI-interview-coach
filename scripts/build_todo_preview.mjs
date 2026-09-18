@@ -5,9 +5,10 @@ import { resolve } from 'node:path';
 const modules = resolve(process.argv[2] || 'node_modules');
 const require = createRequire(resolve(modules, '../package.json'));
 const { build } = require('esbuild');
+for (const tables of [false, true]) {
 await build({
   stdin: {
-    contents: 'import React from "react"; import {createRoot} from "react-dom/client"; import App from "./project_examples/react/src/App.jsx"; createRoot(document.getElementById("root")).render(<App />);',
+    contents: `import React from "react"; import {createRoot} from "react-dom/client"; import App from "./project_examples/${tables ? "react_tables" : "react"}/src/App.jsx"; createRoot(document.getElementById("root")).render(<App />);`,
     resolveDir: process.cwd(),
     loader: 'jsx',
   },
@@ -16,6 +17,8 @@ await build({
   minify: true,
   jsx: 'automatic',
   define: {'process.env.NODE_ENV': '"production"'},
-  outfile: 'static/todo-react/app.js',
+  outfile: `static/todo-react${tables ? '-tables' : ''}/app.js`,
   legalComments: 'eof',
 });
+
+}

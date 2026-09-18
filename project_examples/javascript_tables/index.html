@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript To-Do List Tables</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>To-Do List Tables</h1>
+    <form id="task-form">
+      <label for="task">New task</label>
+      <input id="task" maxlength="120" required autocomplete="off">
+      <button>Add task</button>
+    </form>
+    <p id="status" role="status"></p>
+    <div class="table-scroll"><table>
+      <caption>Your tasks</caption>
+      <thead><tr><th scope="col">#</th><th scope="col">Task</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+      <tbody id="tasks"></tbody>
+    </table></div>
+    <p>Tasks reset when you reload the page.</p>
+  </main>
+</body>
+</html>

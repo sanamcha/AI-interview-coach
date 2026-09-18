@@ -18,7 +18,7 @@ from typescript_questions import TYPESCRIPT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
-from mini_projects import MINI_PROJECTS, project_files
+from mini_projects import MINI_PROJECTS, language_projects
 from mini_project_preview import create_python_preview, python_response, javascript_response
 from coding_patterns import CODING_PATTERNS
 from language_comparison import COMPARISONS, OPERATIONS, DSA_PATTERNS
@@ -55,6 +55,7 @@ app.config.update(
 )
 db.init_app(app)
 python_todo_preview = create_python_preview(app.config['SECRET_KEY'])
+python_table_demo = create_python_preview(app.config['SECRET_KEY'], tables=True)
 
 
 @app.before_request
@@ -266,6 +267,29 @@ def react_project_preview():
     return render_template('react_preview.html')
 
 
+@app.route('/mini-projects/python/tables/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/tables/preview/<path:path>', methods=['GET', 'POST'])
+def python_table_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_table_demo, path)
+
+
+@app.route('/mini-projects/javascript/tables/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/tables/preview/<filename>')
+def javascript_table_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, tables=True)
+
+
+@app.route('/mini-projects/react/tables/preview/')
+def react_table_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', tables=True)
+
+
 @app.route('/mini-projects/<language>')
 def mini_project(language):
     if not login_required():
@@ -274,7 +298,7 @@ def mini_project(language):
     if project is None:
         abort(404)
     return render_template('mini_project.html', project=project, language=language,
-                           projects=MINI_PROJECTS, files=project_files(language))
+                           projects=MINI_PROJECTS, entries=language_projects(language))
 
 
 @app.route('/coding-patterns')

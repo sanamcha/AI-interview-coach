@@ -39,7 +39,17 @@ MINI_PROJECTS = {
 }
 
 
-def project_files(language):
+def project_files(language, tables=False):
     """Read only catalog-approved files, never an arbitrary requested path."""
-    return [(name, (PROJECT_ROOT / language / name).read_text())
+    return [(name, (PROJECT_ROOT / (language + ('_tables' if tables else '')) / name).read_text())
             for name in MINI_PROJECTS[language]['files']]
+
+
+def language_projects(language):
+    base = MINI_PROJECTS[language]
+    return [dict(base, title='To-Do List', files=project_files(language),
+                 preview_endpoint=language + '_project_preview'),
+            dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
+                 summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
+                 steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
+                 preview_endpoint=language + '_table_preview')]

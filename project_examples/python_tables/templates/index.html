@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python To-Do List Tables</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <h1>To-Do List Tables</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="task">New task</label>
+    <input id="task" name="task" maxlength="120" required autocomplete="off">
+    <button>Add task</button>
+  </form>
+  {% if error %}<p role="alert">{{ error }}</p>{% endif %}
+  <p role="status">{{ tasks|rejectattr('done')|list|length }} task(s) remaining</p>
+  <div class="table-scroll"><table>
+    <caption>Your tasks</caption>
+    <thead><tr><th scope="col">#</th><th scope="col">Task</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+    <tbody>
+  {% for task in tasks %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>
+      <span class="{{ 'done' if task.done else '' }}">{{ task.text }}</span></td>
+      <td>{{ "Completed" if task.done else "Active" }}</td>
+      <td><form method="post" action="{{ url_for('update', task_id=task.id, action='toggle') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button aria-label="{{ 'Undo' if task.done else 'Complete' }} {{ task.text }}">{{ 'Undo' if task.done else 'Complete' }}</button>
+      </form>
+      <form method="post" action="{{ url_for('update', task_id=task.id, action='delete') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button aria-label="Delete {{ task.text }}">Delete</button>
+      </form>
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4">No tasks yet. Add your first task.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  <p>Up to 10 tasks, stored in this browser session. This is a learning demo.</p>
+</main>
+</body>
+</html>
