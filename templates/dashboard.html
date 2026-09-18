@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class="dashboard-head">
-  <div><p class="eyebrow">YOUR PRACTICE SPACE</p><h1>Hello, {{ g.user.username }}.</h1><p>Choose Theory to review concepts or Technical to practice coding.</p></div>
+  <div><p class="eyebrow">YOUR PRACTICE SPACE</p><h1>Hello, {{ g.user.username }}.</h1><p>Review Theory, practice Technical questions, or build Mini-projects.</p></div>
   {% if average is not none %}<div class="score">Recent average<strong>{{ average }}/100</strong></div>{% endif %}
 </section>
 <section aria-labelledby="theory-heading">
@@ -19,6 +19,15 @@
   <a class="category" href="{{ url_for('javascript_tricky_interview_questions') }}">JavaScript Tricky Questions <span>→</span></a>
   <a class="category" href="{{ url_for('language_comparison') }}">Python vs JavaScript <span>→</span></a>
   <a class="category" href="{{ url_for('coding_patterns') }}">Popular Coding/Algorithms Pattern <span>→</span></a>
+</div>
+</section>
+<section id="mini-projects" aria-labelledby="mini-projects-heading">
+<h2 id="mini-projects-heading">Mini-projects</h2>
+<p>Build a small project step by step. Choose a language to start with a To-Do List.</p>
+<div class="categories">
+  <a class="category" href="{{ url_for('mini_project', language='python') }}">Python <span>→</span></a>
+  <a class="category" href="{{ url_for('mini_project', language='javascript') }}">JavaScript <span>→</span></a>
+  <a class="category" href="{{ url_for('mini_project', language='react') }}">React <span>→</span></a>
 </div>
 </section>
 {% endblock %}

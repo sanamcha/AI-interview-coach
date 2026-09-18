@@ -18,6 +18,7 @@ from typescript_questions import TYPESCRIPT_QUESTIONS
 from web_questions import CSS_QUESTIONS, HTML_QUESTIONS, JAVASCRIPT_QUESTIONS
 from data_science_questions import DATA_SCIENCE_QUESTIONS
 from ai_ml_questions import AI_ML_QUESTIONS
+from mini_projects import MINI_PROJECTS, project_files
 from coding_patterns import CODING_PATTERNS
 from language_comparison import COMPARISONS, OPERATIONS, DSA_PATTERNS
 from full_stack_questions import FULL_STACK_QUESTIONS
@@ -238,6 +239,17 @@ def my_feedback():
                 .order_by(Attempt.created_at.desc()).all())
     return render_template('my_feedback.html', attempts=attempts,
                            delete_form=DeleteAttemptForm())
+
+
+@app.route('/mini-projects/<language>')
+def mini_project(language):
+    if not login_required():
+        return redirect(url_for('login'))
+    project = MINI_PROJECTS.get(language)
+    if project is None:
+        abort(404)
+    return render_template('mini_project.html', project=project, language=language,
+                           projects=MINI_PROJECTS, files=project_files(language))
 
 
 @app.route('/coding-patterns')

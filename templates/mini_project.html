@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}#mini-projects">← Mini-projects</a>
+<section class="mini-project-page">
+  <p class="eyebrow">MINI-PROJECTS / {{ project.language }}</p>
+  <h1>{{ project.language }} To-Do List</h1>
+  <p>{{ project.summary }}</p>
+  <p class="library-intro">Beginner · {{ project.stack }}</p>
+  <div class="comparison-links" aria-label="Project languages">
+    {% for slug, item in projects.items() %}<a href="{{ url_for('mini_project', language=slug) }}" {% if slug == language %}aria-current="page"{% endif %}>{{ item.language }}</a>{% endfor %}
+  </div>
+  <h2>What you will build</h2>
+  <ul><li>Add a task with a nonempty title.</li><li>Mark a task complete and undo completion.</li><li>Delete a task and see how many remain.</li></ul>
+  <p>{{ project.storage }}</p>
+  <h2>Set up and run</h2>
+  <p>{{ project.setup }}</p>
+  <pre><code>{{ project.commands }}</code></pre>
+  <p>{{ project.open }}</p>
+  <h2>How it works</h2>
+  <ol>{% for step in project.steps %}<li>{{ step }}</li>{% endfor %}</ol>
+  <h2>Project files</h2>
+  <p>Save each file at the path shown. HTML and CSS are included; Bootstrap is not required.</p>
+  {% for name, code in files %}
+  <details class="question-item" {% if loop.first %}open{% endif %}>
+    <summary>{{ name }}</summary>
+    <pre class="project-source"><code>{{ code }}</code></pre>
+  </details>
+  {% endfor %}
+  <h2>Try it yourself</h2>
+  <ul>
+    <li>Add two tasks, complete one, undo it, then delete the other.</li>
+    <li>Try a whitespace-only title: no task should be added.</li>
+    <li>Add the same title twice: deleting one should leave the other.</li>
+    <li>Enter &lt;b&gt;Read a book&lt;/b&gt;: it should appear as text, not HTML.</li>
+    <li>Reload and compare the result with the storage behavior above.</li>
+  </ul>
+  <h2>Extend the project</h2>
+  <p>Add editing, Active / Completed filters, and persistent storage. Try Bootstrap for the form and buttons once the core behavior works.</p>
+  {% if language == 'react' %}<p>References: <a href="https://vite.dev/guide/">Vite setup</a> · <a href="https://react.dev/learn/updating-arrays-in-state">Updating arrays in React state</a>.</p>{% endif %}
+</section>
+{% endblock %}

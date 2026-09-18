@@ -141,3 +141,6 @@ pre { background: #0b111b; border: 1px solid var(--line); border-radius: 8px; co
   nav, nav > div { flex-wrap: wrap; }
   .comparison-table th, .comparison-table td { padding: 10px; }
 }
+
+.mini-project-page { min-width: 0; }
+.project-source { margin: 0 12px 12px; max-height: 560px; overflow: auto; }
