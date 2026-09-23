@@ -57,6 +57,7 @@ db.init_app(app)
 python_todo_preview = create_python_preview(app.config['SECRET_KEY'])
 python_table_demo = create_python_preview(app.config['SECRET_KEY'], tables=True)
 python_api_demo = create_python_preview(app.config['SECRET_KEY'], api=True)
+python_rating_demo = create_python_preview(app.config['SECRET_KEY'], rating=True)
 
 
 @app.before_request
@@ -312,6 +313,29 @@ def react_api_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', api=True)
+
+
+@app.route('/mini-projects/python/rating/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/rating/preview/<path:path>', methods=['GET', 'POST'])
+def python_rating_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_rating_demo, path)
+
+
+@app.route('/mini-projects/javascript/rating/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/rating/preview/<filename>')
+def javascript_rating_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, rating=True)
+
+
+@app.route('/mini-projects/react/rating/preview/')
+def react_rating_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', rating=True)
 
 
 @app.route('/mini-projects/<language>')

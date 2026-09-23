@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>5-Star Ratings</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><main><h1>5-Star Ratings</h1><p id="help">Choose a star to rate. Click the selected rating again to clear it. Use Tab and Enter or Space with a keyboard.</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="stars" role="group" aria-label="Choose a rating" aria-describedby="help">
+{% for value in range(1, 6) %}<button type="submit" name="rating" value="{{ value }}" class="star{{ ' selected' if value <= rating else '' }}" aria-label="Rate {{ value }} out of 5" aria-pressed="{{ 'true' if value == rating else 'false' }}">★</button>{% endfor %}
+</div></form><p role="status">{{ (rating|string) + ' out of 5 stars.' if rating else 'No rating selected.' }}</p><p>Your rating stays in this browser session.</p></main></body></html>

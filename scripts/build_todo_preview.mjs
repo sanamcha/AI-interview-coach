@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 const modules = resolve(process.argv[2] || 'node_modules');
 const require = createRequire(resolve(modules, '../package.json'));
 const { build } = require('esbuild');
-for (const variant of ['', '_tables', '_api']) {
+for (const variant of ['', '_tables', '_api', '_rating']) {
 await build({
   stdin: {
     contents: `import React from "react"; import {createRoot} from "react-dom/client"; import App from "./project_examples/${"react" + variant}/src/App.jsx"; createRoot(document.getElementById("root")).render(<App />);`,

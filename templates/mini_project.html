@@ -16,7 +16,7 @@
       <div class="mini-project-content">
       <p>{{ project.summary }}</p>
   <h2>What you will build</h2>
-  {% if project.is_api %}<ul><li>Fetch 20 API items when the preview opens.</li><li>Add a title, edit an existing or newly added item, and delete an item.</li><li>Handle request errors and retry loading.</li></ul>{% else %}<ul><li>Add a task with a nonempty title.</li><li>Mark a task complete and undo completion.</li><li>Delete a task and see how many remain.</li></ul>{% endif %}
+  {% if project.is_rating %}<ul><li>Click stars to select a rating from one to five.</li><li>Click the selected rating again to clear it.</li><li>Use Tab and Enter or Space to test with a keyboard.</li></ul>{% elif project.is_api %}<ul><li>Fetch 20 API items when the preview opens.</li><li>Add a title, edit an existing or newly added item, and delete an item.</li><li>Handle request errors and retry loading.</li></ul>{% else %}<ul><li>Add a task with a nonempty title.</li><li>Mark a task complete and undo completion.</li><li>Delete a task and see how many remain.</li></ul>{% endif %}
   <p>{{ project.storage }}</p>
   <h2>Set up and run</h2>
   <p>{{ project.setup }}</p>
@@ -33,12 +33,12 @@
   </details>
   {% endfor %}
   <h2>Live preview</h2>
-  {% if project.is_api %}<p>Try GET, POST, PATCH, and DELETE below. Reloading restores the API’s original 20 items. Internet access is required.</p>{% else %}<p>Add tasks, mark them complete, and delete them below. {{ 'Python tasks remain in this browser session.' if language == 'python' else 'Reloading the preview clears its tasks.' }}</p>{% endif %}
+  {% if project.is_rating %}<p>Choose a star below. Selected stars turn gold; unselected stars remain grey.</p>{% elif project.is_api %}<p>Try GET, POST, PATCH, and DELETE below. Reloading restores the API’s original 20 items. Internet access is required.</p>{% else %}<p>Add tasks, mark them complete, and delete them below. {{ 'Python tasks remain in this browser session.' if language == 'python' else 'Reloading the preview clears its tasks.' }}</p>{% endif %}
   <iframe class="project-preview" title="{{ project.language }} {{ project.title }} interactive preview"
     src="{{ url_for(project.preview_endpoint) }}" loading="lazy"></iframe>
   <p><a href="{{ url_for(project.preview_endpoint) }}" target="_blank" rel="noopener">Open the app in a new tab</a></p>
   <h2>Try it yourself</h2>
-  {% if project.is_api %}<ul><li>Wait for 20 items, add two titles, edit one, and delete the other.</li><li>Add duplicate titles and check that each row can be edited separately.</li><li>Try a blank title and verify it is rejected.</li><li>Reload to restore the original API data.</li></ul><p><a href="https://jsonplaceholder.typicode.com/guide/">JSONPlaceholder API documentation</a></p>{% else %}<ul>
+  {% if project.is_rating %}<ul><li>Click stars to select a rating from one to five.</li><li>Click the selected rating again to clear it.</li><li>Use Tab and Enter or Space to test with a keyboard.</li></ul>{% elif project.is_api %}<ul><li>Wait for 20 items, add two titles, edit one, and delete the other.</li><li>Add duplicate titles and check that each row can be edited separately.</li><li>Try a blank title and verify it is rejected.</li><li>Reload to restore the original API data.</li></ul><p><a href="https://jsonplaceholder.typicode.com/guide/">JSONPlaceholder API documentation</a></p>{% else %}<ul>
     <li>Add two tasks, complete one, undo it, then delete the other.</li>
     <li>Try a whitespace-only title: no task should be added.</li>
     <li>Add the same title twice: deleting one should leave the other.</li>
@@ -47,7 +47,7 @@
   </ul>
   {% endif %}
   <h2>Extend the project</h2>
-  <p>Add editing, Active / Completed filters, and persistent storage. Try Bootstrap for the form and buttons once the core behavior works.</p>
+  {% if project.is_rating %}<p>Add multiple products with separate ratings, or save ratings in a database.</p>{% else %}<p>Add editing, Active / Completed filters, and persistent storage. Try Bootstrap for the form and buttons once the core behavior works.</p>{% endif %}
   {% if language == 'react' %}<p>References: <a href="https://vite.dev/guide/">Vite setup</a> · <a href="https://react.dev/learn/updating-arrays-in-state">Updating arrays in React state</a>.</p>{% endif %}
       </div>
     </details></li>

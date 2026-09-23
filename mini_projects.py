@@ -52,7 +52,7 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview'), api_project(language)]
+                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language)]
 
 
 def api_project(language):
@@ -69,3 +69,21 @@ def api_project(language):
                        'Only update the table after a successful request; show loading and retryable error messages.'],
                 files=[(name, (PROJECT_ROOT / (language + '_api') / name).read_text()) for name in names],
                 preview_endpoint=language + '_api_preview')
+
+
+def rating_project(language):
+    base = MINI_PROJECTS[language]
+    names = base['files']
+    return dict(base, title='5-Star Ratings', is_rating=True,
+                summary='Select one to five stars in gold; click the selected rating again to reset all stars to grey.',
+                storage='The Python rating stays in this browser session. JavaScript and React ratings reset on reload.',
+                commands=base['commands'].replace('todo-react', 'star-rating-react'),
+                steps=['Start with a rating of zero and five grey star buttons.',
+                       'Clicking a star sets its value as the rating. Clicking the same rating again resets it to zero.',
+                       'Stars at or below the rating turn gold; the remaining stars stay grey.',
+                       {'python': 'Flask validates a CSRF-protected form, updates the session, and renders the new rating.',
+                        'javascript': 'Click listeners update the rating and toggle the selected CSS class.',
+                        'react': 'useState stores the rating; React derives star colors from state.'}[language],
+                       'Button labels, pressed state, visible focus, and text feedback make the control keyboard accessible.'],
+                files=[(name, (PROJECT_ROOT / (language + '_rating') / name).read_text()) for name in names],
+                preview_endpoint=language + '_rating_preview')
