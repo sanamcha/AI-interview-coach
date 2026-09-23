@@ -52,4 +52,20 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview')]
+                 preview_endpoint=language + '_table_preview'), api_project(language)]
+
+
+def api_project(language):
+    base = MINI_PROJECTS[language]
+    names = {'python': ['requirements.txt', 'app.py', 'templates/index.html', 'static/app.js', 'static/style.css'],
+             'javascript': ['index.html', 'app.js', 'style.css'],
+             'react': ['src/App.jsx', 'src/App.css', 'src/index.css']}[language]
+    return dict(base, title='API CRUD', is_api=True,
+                summary='Load 20 posts from an API, then add, edit, and delete items in a table.',
+                storage='JSONPlaceholder simulates writes: changes are kept in this page until reload, not persisted on the API. Each created row has a unique local key because the API can return the same ID repeatedly.',
+                steps=['GET /posts?_limit=20 fetches the initial 20 items.',
+                       'POST /posts adds a title. PATCH /posts/:id edits it. DELETE /posts/:id removes it.',
+                       'Python makes upstream requests on the server; JavaScript and React use browser fetch.',
+                       'Only update the table after a successful request; show loading and retryable error messages.'],
+                files=[(name, (PROJECT_ROOT / (language + '_api') / name).read_text()) for name in names],
+                preview_endpoint=language + '_api_preview')

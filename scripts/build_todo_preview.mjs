@@ -5,10 +5,10 @@ import { resolve } from 'node:path';
 const modules = resolve(process.argv[2] || 'node_modules');
 const require = createRequire(resolve(modules, '../package.json'));
 const { build } = require('esbuild');
-for (const tables of [false, true]) {
+for (const variant of ['', '_tables', '_api']) {
 await build({
   stdin: {
-    contents: `import React from "react"; import {createRoot} from "react-dom/client"; import App from "./project_examples/${tables ? "react_tables" : "react"}/src/App.jsx"; createRoot(document.getElementById("root")).render(<App />);`,
+    contents: `import React from "react"; import {createRoot} from "react-dom/client"; import App from "./project_examples/${"react" + variant}/src/App.jsx"; createRoot(document.getElementById("root")).render(<App />);`,
     resolveDir: process.cwd(),
     loader: 'jsx',
   },
@@ -17,7 +17,7 @@ await build({
   minify: true,
   jsx: 'automatic',
   define: {'process.env.NODE_ENV': '"production"'},
-  outfile: `static/todo-react${tables ? '-tables' : ''}/app.js`,
+  outfile: `static/todo-react${variant.replace('_', '-')}/app.js`,
   legalComments: 'eof',
 });
 

@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>API CRUD</title><link rel="stylesheet" href="style.css"><script src="app.js" defer></script></head>
+<body><main><h1>API CRUD</h1><p>JSONPlaceholder demo: API writes are simulated. Changes remain here until reload. Newly added items can also be edited and deleted.</p>
+<form id="editor"><label for="title">Item title</label><input id="title" maxlength="120" required><button id="save">Add item</button><button id="cancel" type="button" hidden>Cancel edit</button></form>
+<p id="status" role="status"></p><button id="reload" type="button">Reload 20 API items</button>
+<div class="table-scroll"><table><caption>API items</caption><thead><tr><th scope="col">#</th><th scope="col">Title</th><th scope="col">Actions</th></tr></thead><tbody id="items"></tbody></table></div></main></body></html>

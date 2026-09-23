@@ -56,6 +56,7 @@ app.config.update(
 db.init_app(app)
 python_todo_preview = create_python_preview(app.config['SECRET_KEY'])
 python_table_demo = create_python_preview(app.config['SECRET_KEY'], tables=True)
+python_api_demo = create_python_preview(app.config['SECRET_KEY'], api=True)
 
 
 @app.before_request
@@ -288,6 +289,29 @@ def react_table_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', tables=True)
+
+
+@app.route('/mini-projects/python/api/preview/', defaults={'path': ''}, methods=['GET', 'POST', 'PATCH', 'DELETE'])
+@app.route('/mini-projects/python/api/preview/<path:path>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
+def python_api_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_api_demo, path)
+
+
+@app.route('/mini-projects/javascript/api/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/api/preview/<filename>')
+def javascript_api_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, api=True)
+
+
+@app.route('/mini-projects/react/api/preview/')
+def react_api_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', api=True)
 
 
 @app.route('/mini-projects/<language>')

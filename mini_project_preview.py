@@ -6,9 +6,9 @@ from flask import Response, request, send_from_directory
 from mini_projects import PROJECT_ROOT
 
 
-def create_python_preview(secret_key, tables=False):
-    folder = "python_tables" if tables else "python"
-    module_name = "python_table_preview" if tables else "python_todo_preview"
+def create_python_preview(secret_key, tables=False, api=False):
+    folder = "python_api" if api else "python_tables" if tables else "python"
+    module_name = "python_api_preview" if api else "python_table_preview" if tables else "python_todo_preview"
     spec = importlib.util.spec_from_file_location(module_name, PROJECT_ROOT / folder / 'app.py')
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -17,7 +17,7 @@ def create_python_preview(secret_key, tables=False):
     demo.config.update(
         SECRET_KEY=secret_key,
         SESSION_COOKIE_NAME=module_name,
-        SESSION_COOKIE_PATH='/mini-projects/python/' + ('tables/preview' if tables else 'preview'),
+        SESSION_COOKIE_PATH='/mini-projects/python/' + ('api/preview' if api else 'tables/preview' if tables else 'preview'),
     )
     return demo
 
@@ -29,8 +29,8 @@ def python_response(demo, path):
     return Response.from_app(demo.wsgi_app, environ)
 
 
-def javascript_response(filename, tables=False):
+def javascript_response(filename, tables=False, api=False):
     if filename not in ('index.html', 'app.js', 'style.css'):
         from flask import abort
         abort(404)
-    return send_from_directory(PROJECT_ROOT / ('javascript_tables' if tables else 'javascript'), filename)
+    return send_from_directory(PROJECT_ROOT / ('javascript_api' if api else 'javascript_tables' if tables else 'javascript'), filename)
