@@ -58,6 +58,7 @@ python_todo_preview = create_python_preview(app.config['SECRET_KEY'])
 python_table_demo = create_python_preview(app.config['SECRET_KEY'], tables=True)
 python_api_demo = create_python_preview(app.config['SECRET_KEY'], api=True)
 python_rating_demo = create_python_preview(app.config['SECRET_KEY'], rating=True)
+python_pagination_demo = create_python_preview(app.config['SECRET_KEY'], pagination=True)
 
 
 @app.before_request
@@ -336,6 +337,29 @@ def react_rating_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', rating=True)
+
+
+@app.route('/mini-projects/python/pagination/preview/', defaults={'path': ''})
+@app.route('/mini-projects/python/pagination/preview/<path:path>')
+def python_pagination_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_pagination_demo, path)
+
+
+@app.route('/mini-projects/javascript/pagination/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/pagination/preview/<filename>')
+def javascript_pagination_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, pagination=True)
+
+
+@app.route('/mini-projects/react/pagination/preview/')
+def react_pagination_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', pagination=True)
 
 
 @app.route('/mini-projects/<language>')

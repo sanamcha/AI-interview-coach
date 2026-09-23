@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>React {{ "5-Star Ratings" if rating else "API CRUD" if api else "To-Do List" }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react' + ('-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.css') }}">
-  <script src="{{ url_for('static', filename='todo-react' + ('-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.js') }}" defer></script>
+  <title>React {{ "Pagination" if pagination else "5-Star Ratings" if rating else "API CRUD" if api else "To-Do List" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react' + ('-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.css') }}">
+  <script src="{{ url_for('static', filename='todo-react' + ('-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.js') }}" defer></script>
 </head>
 <body>
   <div id="root"></div>

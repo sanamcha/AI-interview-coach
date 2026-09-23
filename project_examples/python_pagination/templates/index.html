@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pagination</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><main><h1>Fruit pagination</h1><p>20 fruits · 5 items per page</p>
+<ol start="{{ start + 1 }}">{% for fruit in items %}<li>{{ fruit }}</li>{% endfor %}</ol>
+<form method="get" action="{{ url_for('index') }}" class="pagination" aria-label="Fruit pages">
+<button type="submit" name="page" value="{{ page - 1 }}" aria-label="Previous page" title="Previous page" {% if page == 1 %}disabled{% endif %}>←</button>
+<p role="status">Page {{ page }} of {{ total_pages }} · {{ start + 1 }}–{{ end }} of {{ total }}</p>
+<button type="submit" name="page" value="{{ page + 1 }}" aria-label="Next page" title="Next page" {% if page == total_pages %}disabled{% endif %}>→</button>
+</form></main></body></html>

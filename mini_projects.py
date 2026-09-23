@@ -52,7 +52,7 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language)]
+                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language)]
 
 
 def api_project(language):
@@ -87,3 +87,20 @@ def rating_project(language):
                        'Button labels, pressed state, visible focus, and text feedback make the control keyboard accessible.'],
                 files=[(name, (PROJECT_ROOT / (language + '_rating') / name).read_text()) for name in names],
                 preview_endpoint=language + '_rating_preview')
+
+
+def pagination_project(language):
+    base = MINI_PROJECTS[language]
+    return dict(base, title='Pagination', is_pagination=True,
+                summary='Browse 20 fruit names, five per page, using Previous and Next arrow buttons.',
+                storage='Python keeps the page number in the URL, so refreshing retains the page. JavaScript and React reset to page one on reload. No API or database is needed.',
+                commands=base['commands'].replace('todo-react', 'pagination-react'),
+                steps=['Create a list of 20 fruits and set the page size to five: four pages in total.',
+                       'Calculate start = (page - 1) * pageSize and slice five items from that offset.',
+                       'Previous and Next decrease or increase the page number within the valid range.',
+                       'Disable Previous on the first page and Next on the last page.',
+                       {'python': 'Flask reads and validates the page query parameter, then renders the selected slice.',
+                        'javascript': 'Click handlers change the page and render its slice in the DOM.',
+                        'react': 'useState tracks the page; derive the visible slice directly from that state.'}[language]],
+                files=[(name, (PROJECT_ROOT / (language + '_pagination') / name).read_text()) for name in base['files']],
+                preview_endpoint=language + '_pagination_preview')
