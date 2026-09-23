@@ -61,6 +61,7 @@ python_rating_demo = create_python_preview(app.config['SECRET_KEY'], rating=True
 python_pagination_demo = create_python_preview(app.config['SECRET_KEY'], pagination=True)
 python_survey_demo = create_python_preview(app.config['SECRET_KEY'], survey=True)
 python_quiz_demo = create_python_preview(app.config['SECRET_KEY'], quiz=True)
+python_chat_demo = create_python_preview(app.config['SECRET_KEY'], chat=True)
 
 
 @app.before_request
@@ -408,6 +409,28 @@ def react_quiz_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', quiz=True)
+
+
+@app.route('/mini-projects/python/chat/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/chat/preview/<path:path>', methods=['GET', 'POST'])
+def python_chat_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_chat_demo, path)
+
+
+@app.route('/mini-projects/javascript/chat/preview/')
+def javascript_chat_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_chat_demo, '')
+
+
+@app.route('/mini-projects/react/chat/preview/')
+def react_chat_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', chat=True)
 
 
 @app.route('/mini-projects/<language>')

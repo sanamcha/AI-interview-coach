@@ -52,7 +52,7 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language), survey_project(language), quiz_project(language)]
+                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language), survey_project(language), quiz_project(language), chat_project(language)]
 
 
 def api_project(language):
@@ -138,3 +138,25 @@ def quiz_project(language):
                        'Try a new quiz resets progress and samples five questions again.'],
                 files=[(name, (PROJECT_ROOT / (language + '_quiz') / name).read_text()) for name in names],
                 preview_endpoint=language + '_quiz_preview')
+
+
+def chat_project(language):
+    base = MINI_PROJECTS[language]
+    names = (['server.py', 'requirements.txt', 'vite.config.js', 'src/App.jsx', 'src/App.css', 'src/index.css'] if language == 'react'
+             else ['requirements.txt', 'app.py', 'templates/index.html', 'static/app.js', 'static/style.css'])
+    setup = 'Save the files below in a new folder. Python handles shared message storage; JavaScript handles the browser interface. Install Python 3.10+ and run:'
+    commands = MINI_PROJECTS['python']['commands']
+    if language == 'react':
+        setup = 'Create a Vite React project, then save the files below in it. Install Python 3.10+ and a supported Node.js version. Run the API in one terminal and Vite in another:'
+        commands = 'npm create vite@latest chat-react -- --template react\ncd chat-react\nnpm install\n# Save the files below, then in terminal 1:\npython3 -m venv .venv\nsource .venv/bin/activate\n# Windows: .venv\\Scripts\\activate\npip install -r requirements.txt\npython server.py\n# In terminal 2, from chat-react:\nnpm run dev'
+    return dict(base, title='Chat App', is_chat=True, setup=setup, commands=commands,
+                open='Open the Vite URL in two tabs.' if language == 'react' else 'Open http://127.0.0.1:5001 in two tabs.',
+                summary='Send and receive messages between named participants in the same room.',
+                storage='All live previews share a Flask API and SQLite history. Names are display labels, not verified accounts. Room names separate conversations but are not private access controls. The newest 100 messages per room are retained. Standalone projects share messages when connected to the same server.',
+                steps=['Join with a display name and room name. Open another tab with a different name and the same room.',
+                       'POST sends a validated message to the Flask API, which saves it in SQLite.',
+                       'GET polls the room every 1.5 seconds to display messages from all participants.',
+                       'Render messages as text, show request errors, and stop polling when leaving.',
+                       'JavaScript uses DOM events; React uses state and an effect with polling cleanup. Python supplies the shared backend.'],
+                files=[(name, (PROJECT_ROOT / (language + '_chat') / name).read_text()) for name in names],
+                preview_endpoint=language + '_chat_preview')

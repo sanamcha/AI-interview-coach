@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>React {{ "Quiz App" if quiz else "Survey App" if survey else "Pagination" if pagination else "5-Star Ratings" if rating else "API CRUD" if api else "To-Do List" }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react' + ('-quiz' if quiz else '-survey' if survey else '-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.css') }}">
-  <script src="{{ url_for('static', filename='todo-react' + ('-quiz' if quiz else '-survey' if survey else '-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.js') }}" defer></script>
+  {% if chat %}<meta name="chat-api" content="{{ url_for('python_chat_preview', path='api/messages') }}">{% endif %}
+  <title>React {{ "Chat App" if chat else "Quiz App" if quiz else "Survey App" if survey else "Pagination" if pagination else "5-Star Ratings" if rating else "API CRUD" if api else "To-Do List" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='todo-react' + ('-chat' if chat else '-quiz' if quiz else '-survey' if survey else '-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.css') }}">
+  <script src="{{ url_for('static', filename='todo-react' + ('-chat' if chat else '-quiz' if quiz else '-survey' if survey else '-pagination' if pagination else '-rating' if rating else '-api' if api else '-tables' if tables else '') + '/app.js') }}" defer></script>
 </head>
 <body>
   <div id="root"></div>
