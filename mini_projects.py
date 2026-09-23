@@ -52,7 +52,7 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language), survey_project(language), quiz_project(language), chat_project(language)]
+                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language), survey_project(language), quiz_project(language), chat_project(language), weather_project(language), calculator_project(language)]
 
 
 def api_project(language):
@@ -160,3 +160,35 @@ def chat_project(language):
                        'JavaScript uses DOM events; React uses state and an effect with polling cleanup. Python supplies the shared backend.'],
                 files=[(name, (PROJECT_ROOT / (language + '_chat') / name).read_text()) for name in names],
                 preview_endpoint=language + '_chat_preview')
+
+
+def weather_project(language):
+    base = MINI_PROJECTS[language]
+    return dict(base, title='Weather App', is_weather=True,
+                summary='Search a city and display current temperature, conditions, humidity, and wind using Open-Meteo.',
+                storage='Requires internet access. This learning demo uses Open-Meteo’s free non-commercial API without an API key. The first matching city is shown with its region and country. Weather is model-based current data, not a direct station observation.',
+                commands=base['commands'].replace('todo-react', 'weather-react'),
+                steps=['Search the geocoding API to resolve a city name to latitude and longitude.',
+                       'Request current weather using those coordinates and the city’s local time zone.',
+                       'Translate the weather code into a readable description and show Celsius, humidity, and wind in km/h.',
+                       'Handle blank searches, missing cities, network failures, and unavailable data.',
+                       'Python requests the API on the server; JavaScript and React use browser fetch.'],
+                files=[(name, (PROJECT_ROOT / (language + '_weather') / name).read_text()) for name in base['files']],
+                preview_endpoint=language + '_weather_preview')
+
+
+def calculator_project(language):
+    base = MINI_PROJECTS[language]
+    return dict(base, title='Calculator App', is_calculator=True,
+                summary='Calculate addition, subtraction, multiplication, and division with two numbers.',
+                storage='No API or database is needed. Supports decimal and negative inputs. Results use floating-point arithmetic and are displayed to 12 significant digits. Clear starts a fresh calculation.',
+                commands=base['commands'].replace('todo-react', 'calculator-react'),
+                steps=['Read two numbers and an operation from labeled form controls.',
+                       'Validate both numbers and select the operation explicitly, without eval.',
+                       'Reject division by zero and non-finite inputs or results.',
+                       'Display the result or a helpful error, and use Clear to reset.',
+                       {'python': 'Flask reads query parameters and calculates on the server.',
+                        'javascript': 'A submit listener calculates and updates the result text.',
+                        'react': 'Controlled inputs hold values in state; submission updates the result.'}[language]],
+                files=[(name, (PROJECT_ROOT / (language + '_calculator') / name).read_text()) for name in base['files']],
+                preview_endpoint=language + '_calculator_preview')

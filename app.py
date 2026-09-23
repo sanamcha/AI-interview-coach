@@ -62,6 +62,8 @@ python_pagination_demo = create_python_preview(app.config['SECRET_KEY'], paginat
 python_survey_demo = create_python_preview(app.config['SECRET_KEY'], survey=True)
 python_quiz_demo = create_python_preview(app.config['SECRET_KEY'], quiz=True)
 python_chat_demo = create_python_preview(app.config['SECRET_KEY'], chat=True)
+python_weather_demo = create_python_preview(app.config['SECRET_KEY'], weather=True)
+python_calculator_demo = create_python_preview(app.config['SECRET_KEY'], calculator=True)
 
 
 @app.before_request
@@ -431,6 +433,52 @@ def react_chat_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', chat=True)
+
+
+@app.route('/mini-projects/python/weather/preview/', defaults={'path': ''})
+@app.route('/mini-projects/python/weather/preview/<path:path>')
+def python_weather_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_weather_demo, path)
+
+
+@app.route('/mini-projects/javascript/weather/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/weather/preview/<filename>')
+def javascript_weather_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, weather=True)
+
+
+@app.route('/mini-projects/react/weather/preview/')
+def react_weather_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', weather=True)
+
+
+@app.route('/mini-projects/python/calculator/preview/', defaults={'path': ''})
+@app.route('/mini-projects/python/calculator/preview/<path:path>')
+def python_calculator_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_calculator_demo, path)
+
+
+@app.route('/mini-projects/javascript/calculator/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/calculator/preview/<filename>')
+def javascript_calculator_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, calculator=True)
+
+
+@app.route('/mini-projects/react/calculator/preview/')
+def react_calculator_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', calculator=True)
 
 
 @app.route('/mini-projects/<language>')
