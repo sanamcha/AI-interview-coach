@@ -43,3 +43,21 @@ optional environment variables before starting the app (restart after changing):
 The footer defaults to Sanam Maharjan’s contact details in `developer_profile.py`.
 Environment variables override those defaults; setting a contact value to an empty
 string hides that link.
+
+### Render database setup
+
+Set `DATABASE_URL` in the Render service's Environment settings to the Neon
+PostgreSQL connection string, keeping its `sslmode=require` and other query
+parameters. The app accepts `postgresql://`, `postgres://`, or
+`postgresql+psycopg://` and uses the installed psycopg 3 driver. Set a random
+`SECRET_KEY` as well. Local `.env.local` and `.neon` files are not uploaded to
+Render and do not configure the hosted service.
+
+Build command: `pip install -r requirements.txt`
+
+Start command: `python seed.py && gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120`
+
+The seed script creates missing tables and starter questions without deleting
+existing data. For an existing schema requiring changes, use a reviewed migration.
+If deployment fails, inspect the database error immediately above SQLAlchemy's
+error-help link; the link alone does not identify the cause.

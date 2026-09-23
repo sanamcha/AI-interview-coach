@@ -6,6 +6,7 @@ import secrets
 
 from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
 from sqlalchemy import func
+from database_config import database_url
 
 from forms import (AnswerForm, ChatForm, DeleteAttemptForm, FeedbackPracticeForm,
                    GuestLoginForm, LoginForm, SignupForm)
@@ -51,7 +52,8 @@ FEEDBACK_TOPICS = {
 app = Flask(__name__)
 app.config.update(
     SECRET_KEY=os.environ.get('SECRET_KEY', 'change-me-before-deploying'),
-    SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'postgresql+psycopg:///interview_coach'),
+    SQLALCHEMY_DATABASE_URI=database_url(),
+    SQLALCHEMY_ENGINE_OPTIONS={'pool_pre_ping': True},
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
 )
 db.init_app(app)

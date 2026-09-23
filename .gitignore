@@ -6,3 +6,11 @@ instance/
 *.db
 
 
+
+.env
+.env.*
+!.env.example
+.neon
+node_modules/
+
+.codex/config.toml
