@@ -52,7 +52,7 @@ def language_projects(language):
             dict(base, title='To-Do List Tables', files=project_files(language, tables=True),
                  summary='Build a To-Do List as a table with numbered rows, task titles, status, and action buttons.',
                  steps=base['steps'] + ['Render tasks in a semantic table with column headers and an empty-state row. Row numbers follow the current order; stable task IDs identify actions.'],
-                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language)]
+                 preview_endpoint=language + '_table_preview'), api_project(language), rating_project(language), pagination_project(language), survey_project(language), quiz_project(language)]
 
 
 def api_project(language):
@@ -104,3 +104,37 @@ def pagination_project(language):
                         'react': 'useState tracks the page; derive the visible slice directly from that state.'}[language]],
                 files=[(name, (PROJECT_ROOT / (language + '_pagination') / name).read_text()) for name in base['files']],
                 preview_endpoint=language + '_pagination_preview')
+
+
+def survey_project(language):
+    base = MINI_PROJECTS[language]
+    names = base['files'] + (['templates/results.html'] if language == 'python' else [])
+    return dict(base, title='Survey App', is_survey=True,
+                summary='Answer three randomly selected questions, one per page: two Yes/No choices and a final text answer.',
+                storage='Questions are selected once per survey. Back to Survey preserves your answers; New random survey starts over. Python stores the survey in the browser session. JavaScript and React reset on reload.',
+                commands=base['commands'].replace('todo-react', 'survey-react'),
+                steps=['Randomly pick two distinct Yes/No questions and one text question.',
+                       'Show one question at a time and require an answer before moving on.',
+                       'Submit the third answer to a separate results view listing every question and answer.',
+                       'Back to Survey lets you review and edit the same survey. New random survey clears answers and picks again.',
+                       {'python': 'Flask uses session state, validated CSRF-protected forms, and a /results route.',
+                        'javascript': 'DOM events collect answers and hash navigation switches between questions and results.',
+                        'react': 'React state holds questions and answers; hash navigation selects the current page.'}[language]],
+                files=[(name, (PROJECT_ROOT / (language + '_survey') / name).read_text()) for name in names],
+                preview_endpoint=language + '_survey_preview')
+
+
+def quiz_project(language):
+    base = MINI_PROJECTS[language]
+    names = base['files'] + (['templates/results.html'] if language == 'python' else [])
+    return dict(base, title='Quiz App', is_quiz=True,
+                summary='Answer five random multiple-choice questions, one per page, then see your score and percentage.',
+                storage='Five distinct questions are chosen once per attempt. Python retains progress in this browser session. JavaScript and React reset on reload. Try a new quiz clears the attempt and picks again.',
+                commands=base['commands'].replace('todo-react', 'quiz-react'),
+                steps=['Select five questions without replacement from a bank of ten.',
+                       'Require one answer per question before advancing. Keep the selected questions fixed throughout the attempt.',
+                       'Compare each submitted answer with its correct choice and count the matches.',
+                       'Calculate percentage = correct answers / 5 × 100 and show an answer review.',
+                       'Try a new quiz resets progress and samples five questions again.'],
+                files=[(name, (PROJECT_ROOT / (language + '_quiz') / name).read_text()) for name in names],
+                preview_endpoint=language + '_quiz_preview')

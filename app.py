@@ -59,6 +59,8 @@ python_table_demo = create_python_preview(app.config['SECRET_KEY'], tables=True)
 python_api_demo = create_python_preview(app.config['SECRET_KEY'], api=True)
 python_rating_demo = create_python_preview(app.config['SECRET_KEY'], rating=True)
 python_pagination_demo = create_python_preview(app.config['SECRET_KEY'], pagination=True)
+python_survey_demo = create_python_preview(app.config['SECRET_KEY'], survey=True)
+python_quiz_demo = create_python_preview(app.config['SECRET_KEY'], quiz=True)
 
 
 @app.before_request
@@ -360,6 +362,52 @@ def react_pagination_preview():
     if not login_required():
         return redirect(url_for('login'))
     return render_template('react_preview.html', pagination=True)
+
+
+@app.route('/mini-projects/python/survey/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/survey/preview/<path:path>', methods=['GET', 'POST'])
+def python_survey_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_survey_demo, path)
+
+
+@app.route('/mini-projects/javascript/survey/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/survey/preview/<filename>')
+def javascript_survey_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, survey=True)
+
+
+@app.route('/mini-projects/react/survey/preview/')
+def react_survey_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', survey=True)
+
+
+@app.route('/mini-projects/python/quiz/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/mini-projects/python/quiz/preview/<path:path>', methods=['GET', 'POST'])
+def python_quiz_preview(path):
+    if not login_required():
+        return redirect(url_for('login'))
+    return python_response(python_quiz_demo, path)
+
+
+@app.route('/mini-projects/javascript/quiz/preview/', defaults={'filename': 'index.html'})
+@app.route('/mini-projects/javascript/quiz/preview/<filename>')
+def javascript_quiz_preview(filename):
+    if not login_required():
+        return redirect(url_for('login'))
+    return javascript_response(filename, quiz=True)
+
+
+@app.route('/mini-projects/react/quiz/preview/')
+def react_quiz_preview():
+    if not login_required():
+        return redirect(url_for('login'))
+    return render_template('react_preview.html', quiz=True)
 
 
 @app.route('/mini-projects/<language>')

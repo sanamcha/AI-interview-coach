@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Survey App</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body><main><h1>Simple survey</h1><p>Question {{ step + 1 }} of 3</p>
+<form method="post" action="{{ url_for('index', step=step) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<fieldset><legend>{{ question }}</legend>
+{% if step < 2 %}{% for value in ['Yes', 'No'] %}<label><input type="radio" name="answer" value="{{ value }}" required {% if answer == value %}checked{% endif %}> {{ value }}</label>{% endfor %}
+{% else %}<label for="answer">Your answer</label><input type="text" name="answer" id="answer" maxlength="200" value="{{ answer }}" required>{% endif %}</fieldset>
+{% if error %}<p role="alert" class="error">{{ error }}</p>{% endif %}
+<button>{{ 'Submit survey' if step == 2 else 'Next →' }}</button></form></main></body></html>

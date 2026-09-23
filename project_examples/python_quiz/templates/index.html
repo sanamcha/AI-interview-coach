@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quiz App</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body><main><h1>Quick quiz</h1><p>Question {{ step + 1 }} of 5</p>
+<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="step" value="{{ step }}">
+<fieldset><legend>{{ question.question }}</legend>{% for choice in question.choices %}<label><input type="radio" name="answer" value="{{ loop.index0 }}" required> {{ choice }}</label>{% endfor %}</fieldset>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}<button>{{ 'Finish quiz' if step == 4 else 'Next →' }}</button></form></main></body></html>
