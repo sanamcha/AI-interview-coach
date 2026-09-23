@@ -4,10 +4,13 @@
   <p class="eyebrow">PRACTICE WITH PURPOSE</p>
   <h1>Become interview-ready, top 100 most asked interview questions</h1>
   <p>Practice Python, SQL, React and behavioral questions. Save every answer and learn from focused feedback.</p>
-  <a class="button" href="{{ url_for('signup') }}">Create an account</a>
-  <form class="guest-form" action="{{ url_for('guest_login') }}" method="post">
-    {{ guest_form.hidden_tag() }}
-    {{ guest_form.submit(class_='button secondary') }}
-  </form>
+  <div class="hero-actions">
+    <a class="hero-action hero-action-primary" href="{{ url_for('dashboard') }}">Explore dashboard <span aria-hidden="true">→</span></a>
+    <a class="hero-action hero-action-secondary" href="{{ url_for('signup') }}">Create account</a>
+    <form class="hero-guest-form" action="{{ url_for('guest_login') }}" method="post">
+      {{ guest_form.hidden_tag() }}
+      {{ guest_form.submit(class_='hero-action hero-action-guest') }}
+    </form>
+  </div>
 </section>
 {% endblock %}

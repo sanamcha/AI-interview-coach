@@ -26,3 +26,20 @@ export OPENAI_MODEL="gpt-5"
 ```
 
 Keep API keys on the server. Never put them in templates, JavaScript, or Git.
+
+### Developer footer
+
+The shared footer displays your public profile on all main app pages. Set these
+optional environment variables before starting the app (restart after changing):
+
+- `PROFILE_NAME`: your display name
+- `PROFILE_LOCATION`: your location
+- `PROFILE_BIO`: your short introduction
+- `PROFILE_EMAIL`: your email address
+- `PROFILE_GITHUB`: full HTTPS GitHub profile URL
+- `PROFILE_LINKEDIN`: full HTTPS LinkedIn profile URL
+- `PROFILE_X`: full HTTPS X profile URL
+
+The footer defaults to Sanam Maharjan’s contact details in `developer_profile.py`.
+Environment variables override those defaults; setting a contact value to an empty
+string hides that link.

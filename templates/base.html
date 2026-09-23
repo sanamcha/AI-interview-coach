@@ -1,3 +1,4 @@
+{% from 'components/contact_icon.html' import contact_icon %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,11 +11,11 @@
   <nav>
     <a class="brand" href="{{ url_for('home') }}">Interview Coach</a>
     <div>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('language_comparison') }}">Python vs JavaScript</a>
+      <a href="{{ url_for('coding_patterns') }}">Coding patterns</a>
       {% if g.user %}
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('my_feedback') }}">My feedback</a>
-        <a href="{{ url_for('language_comparison') }}">Python vs JavaScript</a>
-        <a href="{{ url_for('coding_patterns') }}">Coding patterns</a>
         <a href="{{ url_for('chat') }}">Chat</a>
         <form class="inline" action="{{ url_for('logout') }}" method="post"><button>Log out</button></form>
       {% else %}
@@ -29,5 +30,29 @@
     {% endfor %}
     {% block content %}{% endblock %}
   </main>
+  <footer class="site-footer" aria-labelledby="footer-profile-heading">
+    <div class="footer-inner">
+      <div class="footer-profile">
+        <p class="eyebrow">ABOUT THE DEVELOPER</p>
+        <h2 id="footer-profile-heading">{{ profile.name or 'Let’s build something useful.' }}</h2>
+        {% if profile.location %}<p class="footer-location">{{ profile.location }}</p>{% endif %}
+        <p class="footer-availability"><span aria-hidden="true"></span>{{ profile.headline }}</p>
+        <p class="footer-bio">{{ profile.bio }}</p>
+      </div>
+      {% if profile.email or profile.github or profile.linkedin or profile.x %}
+      <div class="footer-contact">
+        <h3>Let’s connect</h3>
+        <p>Have a role or project in mind? Get in touch.</p>
+        <ul class="footer-links">
+          {% if profile.email %}<li><a href="mailto:{{ profile.email }}">{{ contact_icon('email') }}Email <span aria-hidden="true">↗</span></a></li>{% endif %}
+          {% for key, label in [('github', 'GitHub'), ('linkedin', 'LinkedIn'), ('x', 'X')] %}
+          {% if profile[key] %}<li><a href="{{ profile[key] }}" target="_blank" rel="noopener noreferrer">{{ contact_icon(key) }}{{ label }} <span aria-hidden="true">↗</span></a></li>{% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    <div class="footer-bottom">Interview Coach · Learn, practice, and build.</div>
+  </footer>
 </body>
 </html>

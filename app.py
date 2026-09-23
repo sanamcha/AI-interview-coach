@@ -10,6 +10,7 @@ from sqlalchemy import func
 from forms import (AnswerForm, ChatForm, DeleteAttemptForm, FeedbackPracticeForm,
                    GuestLoginForm, LoginForm, SignupForm)
 from models import Attempt, Question, User, db
+from developer_profile import PROFILE
 from python_questions import PYTHON_QUESTIONS
 from sql_questions import SQL_QUESTIONS
 from behavioral_questions import BEHAVIORAL_QUESTIONS
@@ -64,6 +65,11 @@ python_quiz_demo = create_python_preview(app.config['SECRET_KEY'], quiz=True)
 python_chat_demo = create_python_preview(app.config['SECRET_KEY'], chat=True)
 python_weather_demo = create_python_preview(app.config['SECRET_KEY'], weather=True)
 python_calculator_demo = create_python_preview(app.config['SECRET_KEY'], calculator=True)
+
+
+@app.context_processor
+def public_profile():
+    return {'profile': PROFILE}
 
 
 @app.before_request
@@ -228,10 +234,8 @@ def logout():
 
 @app.route('/dashboard')
 def dashboard():
-    if not login_required():
-        return redirect(url_for('login'))
     attempts = (Attempt.query.filter_by(user_id=g.user.id)
-                .order_by(Attempt.created_at.desc()).limit(10).all())
+                .order_by(Attempt.created_at.desc()).limit(10).all()) if g.user else []
     database_categories = [row[0] for row in db.session.query(Question.category)
                            .distinct().order_by(Question.category)]
     categories = list(dict.fromkeys(['Python', 'Python Tricky Questions', 'SQL', 'Behavioral', 'React', 'HTML', 'CSS', 'JavaScript', 'JavaScript Tricky Questions', 'TypeScript', 'Data Science', 'AI/Machine Learning', 'Full Stack Developer', 'Frontend Developer', 'Backend Developer'] + database_categories))
@@ -255,236 +259,174 @@ def my_feedback():
 @app.route('/mini-projects/python/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/preview/<path:path>', methods=['GET', 'POST'])
 def python_project_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_todo_preview, path)
 
 
 @app.route('/mini-projects/javascript/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/preview/<filename>')
 def javascript_project_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename)
 
 
 @app.route('/mini-projects/react/preview/')
 def react_project_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html')
 
 
 @app.route('/mini-projects/python/tables/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/tables/preview/<path:path>', methods=['GET', 'POST'])
 def python_table_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_table_demo, path)
 
 
 @app.route('/mini-projects/javascript/tables/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/tables/preview/<filename>')
 def javascript_table_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, tables=True)
 
 
 @app.route('/mini-projects/react/tables/preview/')
 def react_table_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', tables=True)
 
 
 @app.route('/mini-projects/python/api/preview/', defaults={'path': ''}, methods=['GET', 'POST', 'PATCH', 'DELETE'])
 @app.route('/mini-projects/python/api/preview/<path:path>', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def python_api_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_api_demo, path)
 
 
 @app.route('/mini-projects/javascript/api/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/api/preview/<filename>')
 def javascript_api_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, api=True)
 
 
 @app.route('/mini-projects/react/api/preview/')
 def react_api_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', api=True)
 
 
 @app.route('/mini-projects/python/rating/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/rating/preview/<path:path>', methods=['GET', 'POST'])
 def python_rating_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_rating_demo, path)
 
 
 @app.route('/mini-projects/javascript/rating/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/rating/preview/<filename>')
 def javascript_rating_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, rating=True)
 
 
 @app.route('/mini-projects/react/rating/preview/')
 def react_rating_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', rating=True)
 
 
 @app.route('/mini-projects/python/pagination/preview/', defaults={'path': ''})
 @app.route('/mini-projects/python/pagination/preview/<path:path>')
 def python_pagination_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_pagination_demo, path)
 
 
 @app.route('/mini-projects/javascript/pagination/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/pagination/preview/<filename>')
 def javascript_pagination_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, pagination=True)
 
 
 @app.route('/mini-projects/react/pagination/preview/')
 def react_pagination_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', pagination=True)
 
 
 @app.route('/mini-projects/python/survey/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/survey/preview/<path:path>', methods=['GET', 'POST'])
 def python_survey_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_survey_demo, path)
 
 
 @app.route('/mini-projects/javascript/survey/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/survey/preview/<filename>')
 def javascript_survey_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, survey=True)
 
 
 @app.route('/mini-projects/react/survey/preview/')
 def react_survey_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', survey=True)
 
 
 @app.route('/mini-projects/python/quiz/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/quiz/preview/<path:path>', methods=['GET', 'POST'])
 def python_quiz_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_quiz_demo, path)
 
 
 @app.route('/mini-projects/javascript/quiz/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/quiz/preview/<filename>')
 def javascript_quiz_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, quiz=True)
 
 
 @app.route('/mini-projects/react/quiz/preview/')
 def react_quiz_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', quiz=True)
 
 
 @app.route('/mini-projects/python/chat/preview/', defaults={'path': ''}, methods=['GET', 'POST'])
 @app.route('/mini-projects/python/chat/preview/<path:path>', methods=['GET', 'POST'])
 def python_chat_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_chat_demo, path)
 
 
 @app.route('/mini-projects/javascript/chat/preview/')
 def javascript_chat_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_chat_demo, '')
 
 
 @app.route('/mini-projects/react/chat/preview/')
 def react_chat_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', chat=True)
 
 
 @app.route('/mini-projects/python/weather/preview/', defaults={'path': ''})
 @app.route('/mini-projects/python/weather/preview/<path:path>')
 def python_weather_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_weather_demo, path)
 
 
 @app.route('/mini-projects/javascript/weather/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/weather/preview/<filename>')
 def javascript_weather_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, weather=True)
 
 
 @app.route('/mini-projects/react/weather/preview/')
 def react_weather_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', weather=True)
 
 
 @app.route('/mini-projects/python/calculator/preview/', defaults={'path': ''})
 @app.route('/mini-projects/python/calculator/preview/<path:path>')
 def python_calculator_preview(path):
-    if not login_required():
-        return redirect(url_for('login'))
     return python_response(python_calculator_demo, path)
 
 
 @app.route('/mini-projects/javascript/calculator/preview/', defaults={'filename': 'index.html'})
 @app.route('/mini-projects/javascript/calculator/preview/<filename>')
 def javascript_calculator_preview(filename):
-    if not login_required():
-        return redirect(url_for('login'))
     return javascript_response(filename, calculator=True)
 
 
 @app.route('/mini-projects/react/calculator/preview/')
 def react_calculator_preview():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('react_preview.html', calculator=True)
 
 
 @app.route('/mini-projects/<language>')
 def mini_project(language):
-    if not login_required():
-        return redirect(url_for('login'))
     project = MINI_PROJECTS.get(language)
     if project is None:
         abort(404)
@@ -494,8 +436,6 @@ def mini_project(language):
 
 @app.route('/coding-patterns')
 def coding_patterns():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('coding_patterns.html', patterns=CODING_PATTERNS)
 
 
@@ -526,8 +466,6 @@ def clear_chat():
 @app.route('/python-interview-questions')
 def python_interview_questions():
     """Show the Python question library with answers hidden by default."""
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=PYTHON_QUESTIONS,
                            library_title='100 common Python interview questions',
                            library_label='PYTHON STUDY LIBRARY', feedback_topic='python')
@@ -536,8 +474,6 @@ def python_interview_questions():
 @app.route('/sql-interview-questions')
 def sql_interview_questions():
     """Show the SQL question library with answers hidden by default."""
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=SQL_QUESTIONS,
                            library_title='100 common SQL interview questions',
                            library_label='SQL STUDY LIBRARY', feedback_topic='sql')
@@ -546,8 +482,6 @@ def sql_interview_questions():
 @app.route('/behavioral-interview-questions')
 def behavioral_interview_questions():
     """Show behavioral prompts with hidden STAR-answer guidance."""
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=BEHAVIORAL_QUESTIONS,
                            library_title='50 common behavioral interview questions',
                            library_label='BEHAVIORAL STUDY LIBRARY', feedback_topic='behavioral')
@@ -556,8 +490,6 @@ def behavioral_interview_questions():
 @app.route('/react-interview-questions')
 def react_interview_questions():
     """Show the React question library with answers hidden by default."""
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=REACT_QUESTIONS,
                            library_title='100 common React interview questions',
                            library_label='REACT STUDY LIBRARY', feedback_topic='react')
@@ -565,8 +497,6 @@ def react_interview_questions():
 
 @app.route('/html-interview-questions')
 def html_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=HTML_QUESTIONS,
                            library_title='100 common HTML interview questions',
                            library_label='HTML STUDY LIBRARY', feedback_topic='html')
@@ -574,8 +504,6 @@ def html_interview_questions():
 
 @app.route('/css-interview-questions')
 def css_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=CSS_QUESTIONS,
                            library_title='100 common CSS interview questions',
                            library_label='CSS STUDY LIBRARY', feedback_topic='css')
@@ -583,8 +511,6 @@ def css_interview_questions():
 
 @app.route('/javascript-interview-questions')
 def javascript_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=JAVASCRIPT_QUESTIONS,
                            library_title='100 common JavaScript interview questions',
                            library_label='JAVASCRIPT STUDY LIBRARY', feedback_topic='javascript')
@@ -592,16 +518,12 @@ def javascript_interview_questions():
 
 @app.route('/python-vs-javascript')
 def language_comparison():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('language_comparison.html', comparisons=COMPARISONS,
                            operations=OPERATIONS, patterns=DSA_PATTERNS)
 
 
 @app.route('/typescript-interview-questions')
 def typescript_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=TYPESCRIPT_QUESTIONS,
                            library_title='100 common TypeScript interview questions',
                            library_label='TYPESCRIPT STUDY LIBRARY', feedback_topic='typescript')
@@ -609,8 +531,6 @@ def typescript_interview_questions():
 
 @app.route('/data-science-interview-questions')
 def data_science_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=DATA_SCIENCE_QUESTIONS,
                            library_title='100 common Data Science interview questions',
                            library_label='DATA SCIENCE STUDY LIBRARY', feedback_topic='data-science')
@@ -618,8 +538,6 @@ def data_science_interview_questions():
 
 @app.route('/ai-ml-interview-questions')
 def ai_ml_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=AI_ML_QUESTIONS,
                            library_title='100 common AI/Machine Learning interview questions',
                            library_label='AI/MACHINE LEARNING STUDY LIBRARY', feedback_topic='ai-ml')
@@ -627,8 +545,6 @@ def ai_ml_interview_questions():
 
 @app.route('/full-stack-interview-questions')
 def full_stack_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=FULL_STACK_QUESTIONS,
                            library_title='100 common Full Stack Developer interview questions',
                            library_label='FULL STACK STUDY LIBRARY', feedback_topic='full-stack')
@@ -636,8 +552,6 @@ def full_stack_interview_questions():
 
 @app.route('/frontend-interview-questions')
 def frontend_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=FRONTEND_QUESTIONS,
                            library_title='100 common Frontend Developer interview questions',
                            library_label='FRONTEND STUDY LIBRARY', feedback_topic='frontend')
@@ -645,8 +559,6 @@ def frontend_interview_questions():
 
 @app.route('/backend-interview-questions')
 def backend_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=BACKEND_QUESTIONS,
                            library_title='100 common Backend Developer interview questions',
                            library_label='BACKEND STUDY LIBRARY', feedback_topic='backend')
@@ -654,8 +566,6 @@ def backend_interview_questions():
 
 @app.route('/python-tricky-interview-questions')
 def python_tricky_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=PYTHON_TRICKY_QUESTIONS,
                            library_title='100 tricky Python coding challenges',
                            library_label='PYTHON TRICKY QUESTIONS', feedback_topic='python-tricky')
@@ -663,8 +573,6 @@ def python_tricky_interview_questions():
 
 @app.route('/javascript-tricky-interview-questions')
 def javascript_tricky_interview_questions():
-    if not login_required():
-        return redirect(url_for('login'))
     return render_template('python_questions.html', questions=JAVASCRIPT_TRICKY_QUESTIONS,
                            library_title='100 tricky JavaScript coding challenges',
                            library_label='JAVASCRIPT TRICKY QUESTIONS', feedback_topic='javascript-tricky')

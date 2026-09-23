@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class="dashboard-head">
-  <div><p class="eyebrow">YOUR PRACTICE SPACE</p><h1>Hello, {{ g.user.username }}.</h1><p>Review Theory, practice Technical questions, or build Mini-projects.</p></div>
+  <div><p class="eyebrow">YOUR PRACTICE SPACE</p><h1>{% if g.user %}Hello, {{ g.user.username }}.{% else %}Explore Interview Coach{% endif %}</h1><p>Review Theory, practice Technical questions, or build Mini-projects.</p></div>
   {% if average is not none %}<div class="score">Recent average<strong>{{ average }}/100</strong></div>{% endif %}
 </section>
 <section aria-labelledby="theory-heading">
